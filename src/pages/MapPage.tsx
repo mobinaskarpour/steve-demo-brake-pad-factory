@@ -62,14 +62,14 @@ function SteveMapNode({ data, selected }: NodeProps) {
 
 const nodeTypes = { steve: SteveMapNode }
 
-const edgeStyle: CSSProperties = { stroke: '#3a3832', strokeWidth: 1.15 }
+const edgeStyle: CSSProperties = { stroke: 'var(--flow-edge)', strokeWidth: 1.15 }
 const edgeOpts = {
   type: 'smoothstep' as const,
   style: edgeStyle,
-  labelStyle: { fill: '#8a7f6c', fontSize: 10 },
-  labelBgStyle: { fill: '#100f0b' },
+  labelStyle: { fill: 'var(--flow-label)', fontSize: 10 },
+  labelBgStyle: { fill: 'var(--color-steve-page)' },
   labelBgPadding: [4, 2] as [number, number],
-  markerEnd: { type: MarkerType.ArrowClosed, color: '#3a3832', width: 12, height: 12 },
+  markerEnd: { type: MarkerType.ArrowClosed, color: 'var(--flow-edge)', width: 12, height: 12 },
 }
 
 export function MapPage() {
@@ -183,7 +183,7 @@ export function MapPage() {
         <div className="grid gap-4 xl:grid-cols-[1fr_300px]">
           <section className="steve-surface overflow-hidden">
             {tab === 'goals' ? <div className="border-b border-[var(--color-steve-border)] px-4 py-2 text-[11px] tracking-wide text-[var(--color-steve-gold)]">{t('map.goalFocus')}</div> : null}
-            <div className="relative h-[560px] bg-[#100f0b]">
+            <div className="relative h-[560px] bg-[var(--color-steve-page)]">
               <ReactFlow
                 nodes={flowNodes}
                 edges={graph.edges}
@@ -199,7 +199,7 @@ export function MapPage() {
                 maxZoom={1.35}
                 defaultEdgeOptions={edgeOpts}
               >
-                <Background gap={32} color="#1c1a15" size={1} />
+                <Background gap={32} color="var(--flow-dot)" size={1} />
                 <Controls position="top-left" showInteractive={false} />
               </ReactFlow>
             </div>
@@ -269,7 +269,7 @@ function NodeDetailPanel({
           <KV k={t('map.guardrail')} v={t('map.guardrailValue')} />
         </div>
         {goal?.risk ? (
-          <div className="mt-4 rounded-xl border border-[#5a3d16] bg-[#2a1f10] px-3 py-2.5 text-[12px] text-[var(--color-steve-gold-soft)]">
+          <div className="mt-4 rounded-xl border border-[var(--notice-warning-border)] bg-[var(--notice-warning-bg)] px-3 py-2.5 text-[12px] text-[var(--color-steve-gold-soft)]">
             <Ltr>{loc(goal.risk, 'goals', goal.id, 'risk')}</Ltr>
           </div>
         ) : null}
@@ -318,7 +318,7 @@ function NodeDetailPanel({
       {alert || d.alertLine ? (
         <button
           type="button"
-          className="mt-4 w-full rounded-xl border border-[#5a3d16] bg-[#2a1f10] px-3 py-2.5 text-start text-[12px] text-[var(--color-steve-gold-soft)]"
+          className="mt-4 w-full rounded-xl border border-[var(--notice-warning-border)] bg-[var(--notice-warning-bg)] px-3 py-2.5 text-start text-[12px] text-[var(--color-steve-gold-soft)]"
           onClick={() => {
             if (alert) navigate(recordPath(alert.recordType, alert.recordId))
             else navigate('/work')
@@ -747,7 +747,7 @@ function AuthorityView({
             <KV k={t('map.authorityLevel')} v={current.level} />
             <KV k={t('map.execStatus')} v={<span className="text-[var(--color-steve-green-bright)]">{t('map.execActive')}</span>} />
           </div>
-          {current.review ? <div className="mt-4 rounded-xl border border-[#5a3d16] bg-[#2a1f10] px-3 py-2.5 text-[12px] text-[var(--color-steve-gold-soft)]">{current.review}</div> : null}
+          {current.review ? <div className="mt-4 rounded-xl border border-[var(--notice-warning-border)] bg-[var(--notice-warning-bg)] px-3 py-2.5 text-[12px] text-[var(--color-steve-gold-soft)]">{current.review}</div> : null}
           <div className="mt-4 flex flex-wrap gap-2">
             <Link to="/agents" className="rounded-xl bg-[var(--color-steve-green)] px-4 py-2.5 text-white">
               {t('map.openDelegation')}

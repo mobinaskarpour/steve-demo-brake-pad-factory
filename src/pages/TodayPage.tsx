@@ -256,14 +256,14 @@ export function TodayPage() {
                 <button
                   key={item.id}
                   type="button"
-                  className="flex w-full items-center gap-3 border-b border-[var(--color-steve-border-soft)] px-1 py-2.5 text-start last:border-b-0 hover:bg-[rgba(255,255,255,0.015)]"
+                  className="flex w-full items-center gap-3 border-b border-[var(--color-steve-border-soft)] px-1 py-2.5 text-start last:border-b-0 hover:bg-[var(--steve-hover-soft)]"
                   onClick={() => navigate(recordPath(item.recordType, item.recordId))}
                 >
                   <div
                     className={cn(
                       'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
                       item.priority === 'critical'
-                        ? 'bg-[#3a1a16] text-[var(--color-steve-danger)]'
+                        ? 'bg-[var(--steve-danger-tint)] text-[var(--color-steve-danger)]'
                         : 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-green-bright)]',
                     )}
                   >
@@ -271,7 +271,7 @@ export function TodayPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-[#221f18] px-2 py-0.5 text-[11px] text-[var(--color-steve-gold)]">
+                      <span className="rounded-full bg-[var(--steve-chip-bg)] px-2 py-0.5 text-[11px] text-[var(--color-steve-gold)]">
                         {loc(item.type, 'alerts', item.id, 'type')}
                       </span>
                       <span className="text-[13px] text-[var(--color-steve-text)]">{loc(item.title, 'alerts', item.id, 'title')}</span>

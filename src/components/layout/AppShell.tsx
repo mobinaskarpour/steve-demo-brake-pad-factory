@@ -8,7 +8,7 @@ import { AskSteveRoot } from './AskSteve'
 import { AskSteveProvider, useAskSteve } from './AskSteveContext'
 import { appConfig } from '../../config'
 import { useDemo } from '../../domain/store'
-import { LanguageSwitcher, useLocale } from '../../i18n/LocaleProvider'
+import { LanguageSwitcher, ThemeSwitcher, useLocale } from '../../i18n/LocaleProvider'
 import { ensureEnglish } from '../../i18n/ensureEnglish'
 import { getEnConfig } from '../../i18n/enContent'
 
@@ -106,6 +106,7 @@ function ShellInner() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeSwitcher />
             <LanguageSwitcher />
             <div className="relative">
               <button

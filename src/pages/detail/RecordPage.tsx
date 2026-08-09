@@ -106,7 +106,7 @@ export function RecordPage() {
     const unit = state.units.find((u) => u.id === pr.unitId)
     return (
       <Shell title={<Ltr>{pr.id}</Ltr>} subtitle={loc(pr.title, 'purchases', pr.id, 'title')} back="/">
-        <div className="mb-3 rounded-xl border border-[#5a3d16] bg-[#2a1f10] px-3 py-2 text-[12px] text-[var(--color-steve-gold-soft)]">{t('record.purchaseDemoNote')}</div>
+        <div className="mb-3 rounded-xl border border-[var(--notice-warning-border)] bg-[var(--notice-warning-bg)] px-3 py-2 text-[12px] text-[var(--color-steve-gold-soft)]">{t('record.purchaseDemoNote')}</div>
         <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
           <section className="steve-surface p-5">
             <Row label={t('record.status')} value={<Badge tone={pr.status === 'approved' ? 'success' : pr.status === 'rejected' ? 'danger' : 'warning'}>{tStatus(pr.status)}</Badge>} />
@@ -277,7 +277,7 @@ export function RecordPage() {
     if (!c) return <Missing />
     return (
       <Shell title={t('record.letterTitle', { number: c.number })} subtitle={loc(c.title, 'correspondence', c.id, 'title')} back="/">
-        <div className="mb-3 rounded-xl border border-[#5a3d16] bg-[#2a1f10] px-3 py-2 text-[12px] text-[var(--color-steve-gold-soft)]">{loc(c.demoNote, 'correspondence', c.id, 'demoNote')}</div>
+        <div className="mb-3 rounded-xl border border-[var(--notice-warning-border)] bg-[var(--notice-warning-bg)] px-3 py-2 text-[12px] text-[var(--color-steve-gold-soft)]">{loc(c.demoNote, 'correspondence', c.id, 'demoNote')}</div>
         <div className="grid gap-4 lg:grid-cols-2">
           <section className="steve-surface p-5">
             <Row label={t('record.from')} value={loc(c.from, 'correspondence', c.id, 'from')} />

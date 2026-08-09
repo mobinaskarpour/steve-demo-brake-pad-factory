@@ -184,12 +184,12 @@ export function AgentsPage() {
             <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chart}>
-                  <CartesianGrid stroke="#2a2a28" vertical={false} />
-                  <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#8a8478' }} axisLine={false} tickLine={false} />
-                  <YAxis orientation={isRtl ? 'right' : 'left'} tick={{ fontSize: 11, fill: '#8a8478' }} axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={{ background: '#17150f', border: '1px solid #2a2720', borderRadius: 12 }} />
-                  <ReferenceLine y={120 * periodScale} stroke="#c5a059" strokeDasharray="4 4" />
-                  <Line type="monotone" dataKey="value" stroke="#3ecf8e" strokeWidth={2} dot={{ r: 3, fill: '#3ecf8e' }} />
+                  <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+                  <XAxis dataKey="day" tick={{ fontSize: 11, fill: 'var(--chart-tick)' }} axisLine={false} tickLine={false} />
+                  <YAxis orientation={isRtl ? 'right' : 'left'} tick={{ fontSize: 11, fill: 'var(--chart-tick)' }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ background: 'var(--chart-tooltip-bg)', border: '1px solid var(--color-steve-border)', borderRadius: 12 }} />
+                  <ReferenceLine y={120 * periodScale} stroke="var(--chart-2)" strokeDasharray="4 4" />
+                  <Line type="monotone" dataKey="value" stroke="var(--chart-1)" strokeWidth={2} dot={{ r: 3, fill: 'var(--chart-1)' }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

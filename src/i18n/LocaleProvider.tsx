@@ -1,6 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Moon, Sun } from 'lucide-react'
 import i18n, { applyDocumentLocale, LOCALE_KEY, readStoredLocale, type AppLocale } from './index'
+import { applyDocumentTheme, readStoredTheme, storeTheme, type AppTheme } from '../theme/theme'
 import { getEnField } from './enContent'
 import { ensureEnglish } from './ensureEnglish'
 
@@ -9,6 +11,10 @@ type LocaleCtx = {
   dir: 'rtl' | 'ltr'
   isRtl: boolean
   setLocale: (l: AppLocale) => void
+  /** Active visual identity: dark is each business's primary brand expression */
+  theme: AppTheme
+  setTheme: (t: AppTheme) => void
+  toggleTheme: () => void
   /** Resolve bilingual demo field: Persian seed string + English overlay */
   loc: (fa: string | undefined | null, collection: string, id: string, field: string) => string
   /** Translate common runtime toast strings */
@@ -80,6 +86,7 @@ const priorityMap: Record<string, string> = {
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const { t, i18n: i18nApi } = useTranslation()
   const [locale, setLocaleState] = useState<AppLocale>(() => readStoredLocale())
+  const [theme, setThemeState] = useState<AppTheme>(() => readStoredTheme())
 
   const setLocale = useCallback((l: AppLocale) => {
     setLocaleState(l)
@@ -92,10 +99,29 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     applyDocumentLocale(l)
   }, [])
 
+  const setTheme = useCallback((next: AppTheme) => {
+    setThemeState(next)
+    storeTheme(next)
+    applyDocumentTheme(next)
+  }, [])
+
+  const toggleTheme = useCallback(() => {
+    setThemeState((prev) => {
+      const next: AppTheme = prev === 'dark' ? 'light' : 'dark'
+      storeTheme(next)
+      applyDocumentTheme(next)
+      return next
+    })
+  }, [])
+
   useEffect(() => {
     applyDocumentLocale(locale)
     if (i18nApi.language !== locale) void i18n.changeLanguage(locale)
   }, [locale, i18nApi.language])
+
+  useEffect(() => {
+    applyDocumentTheme(theme)
+  }, [theme])
 
   const loc = useCallback(
     (fa: string | undefined | null, collection: string, id: string, field: string) => {
@@ -157,13 +183,16 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       dir: locale === 'fa' ? 'rtl' : 'ltr',
       isRtl: locale === 'fa',
       setLocale,
+      theme,
+      setTheme,
+      toggleTheme,
       loc,
       tToast,
       tStatus,
       tPriority,
       tStage,
     }),
-    [locale, setLocale, loc, tToast, tStatus, tPriority, tStage],
+    [locale, setLocale, theme, setTheme, toggleTheme, loc, tToast, tStatus, tPriority, tStage],
   )
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
@@ -175,16 +204,19 @@ export function useLocale() {
   return ctx
 }
 
+const switchGroupClass =
+  'inline-flex items-center rounded-full border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] p-0.5 text-[11px]'
+
 export function LanguageSwitcher({ className = '' }: { className?: string }) {
   const { locale, setLocale } = useLocale()
   return (
-    <div className={`inline-flex items-center rounded-full border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] p-0.5 text-[11px] ${className}`} role="group" aria-label="Language">
+    <div className={`${switchGroupClass} ${className}`} role="group" aria-label="Language">
       <button
         type="button"
         aria-label="Switch language to Persian"
         aria-pressed={locale === 'fa'}
         data-locale-option="fa"
-        className={`rounded-full px-2.5 py-1 transition ${locale === 'fa' ? 'bg-[var(--color-steve-green-active)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
+        className={`rounded-full px-2.5 py-1 transition ${locale === 'fa' ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
         onClick={() => setLocale('fa')}
       >
         FA
@@ -194,11 +226,38 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
         aria-label="Switch language to English"
         aria-pressed={locale === 'en'}
         data-locale-option="en"
-        className={`rounded-full px-2.5 py-1 transition ${locale === 'en' ? 'bg-[var(--color-steve-green-active)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
+        className={`rounded-full px-2.5 py-1 transition ${locale === 'en' ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
         onClick={() => setLocale('en')}
       >
         EN
       </button>
+    </div>
+  )
+}
+
+export function ThemeSwitcher({ className = '' }: { className?: string }) {
+  const { theme, setTheme } = useLocale()
+  const { t } = useTranslation()
+  const options = [
+    { value: 'light' as const, Icon: Sun, label: t('shell.light') },
+    { value: 'dark' as const, Icon: Moon, label: t('shell.dark') },
+  ]
+  return (
+    <div className={`${switchGroupClass} ${className}`} role="group" aria-label={t('shell.theme')}>
+      {options.map(({ value, Icon, label }) => (
+        <button
+          key={value}
+          type="button"
+          aria-label={label}
+          aria-pressed={theme === value}
+          title={label}
+          data-theme-option={value}
+          className={`inline-flex items-center justify-center rounded-full px-2.5 py-1 transition ${theme === value ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
+          onClick={() => setTheme(value)}
+        >
+          <Icon size={13} strokeWidth={1.6} />
+        </button>
+      ))}
     </div>
   )
 }

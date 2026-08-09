@@ -13,7 +13,10 @@
     "myWork": "کارتابل من",
     "askSteve": "از استیو بپرس",
     "language": "زبان",
-    "scope": "محدوده"
+    "scope": "محدوده",
+    "theme": "پوسته",
+    "light": "روشن",
+    "dark": "تیره"
   },
   "actions": {
     "approve": "تایید",

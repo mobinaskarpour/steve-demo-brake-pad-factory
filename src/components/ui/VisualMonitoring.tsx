@@ -97,7 +97,7 @@ function FeedCard({
       type="button"
       onClick={onOpen}
       className={cn(
-        'group relative overflow-hidden rounded-xl border border-[var(--color-steve-border)] bg-[#12110e] text-start transition hover:border-[var(--color-steve-brief-border)]',
+        'group relative overflow-hidden rounded-xl border border-[var(--color-steve-border)] bg-[var(--ask-inset-bg)] text-start transition hover:border-[var(--color-steve-brief-border)]',
         tall ? 'min-h-[220px]' : 'min-h-[110px]',
       )}
     >
@@ -145,7 +145,7 @@ export function VisualEvidence({
     <button
       type="button"
       onClick={onOpen}
-      className="group relative block w-full overflow-hidden rounded-xl border border-[var(--color-steve-border)] bg-[#12110e] text-start"
+      className="group relative block w-full overflow-hidden rounded-xl border border-[var(--color-steve-border)] bg-[var(--ask-inset-bg)] text-start"
     >
       <img src={src} alt={caption} loading="lazy" className="aspect-[16/10] w-full object-cover opacity-95 transition group-hover:opacity-100" />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 py-2.5">

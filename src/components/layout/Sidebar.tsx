@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { appConfig } from '../../config'
 import { cn } from '../../lib/utils'
 import { useLocale } from '../../i18n/LocaleProvider'
+import { BrandLockup } from '../../brand/BrandLockup'
 import { ensureEnglish } from '../../i18n/ensureEnglish'
 import { getEnConfig } from '../../i18n/enContent'
 
@@ -23,19 +24,21 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const { locale } = useLocale()
   const enCfg = getEnConfig() as Record<string, string>
   const brand = locale === 'en' ? enCfg.brandName || appConfig.brandName : appConfig.brandName
+  const shortBrand = locale === 'en' ? enCfg.shortName || appConfig.shortName : appConfig.shortName
 
   return (
     <aside className="steve-sidebar flex h-full shrink-0 flex-col">
       <div className="px-5 pt-7 pb-6">
         <button
           type="button"
-          className="steve-logo"
+          className="w-full"
+          aria-label={`${appConfig.productName} — ${shortBrand}`}
           onClick={() => {
             navigate('/')
             onNavigate?.()
           }}
         >
-          {appConfig.productName}
+          <BrandLockup product={appConfig.productName} name={shortBrand} />
         </button>
       </div>
 
@@ -54,7 +57,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       <div className="border-t border-[var(--color-steve-border-soft)] px-4 py-4">
         <button
           type="button"
-          className="flex w-full items-center gap-2.5 rounded-xl px-1 py-1 text-start hover:bg-[rgba(255,255,255,0.03)]"
+          className="flex w-full items-center gap-2.5 rounded-xl px-1 py-1 text-start hover:bg-[var(--steve-hover)]"
           onClick={() => {
             navigate('/agents')
             onNavigate?.()

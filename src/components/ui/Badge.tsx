@@ -4,9 +4,9 @@ import type { ReactNode } from 'react'
 
 const tones: Record<StatusTone, string> = {
   success: 'border-[var(--color-green-border)] text-[var(--color-green-bright)] bg-[var(--color-green-dim)]',
-  warning: 'border-[#5a3d16] text-[var(--color-gold-soft)] bg-[#2a1f10]',
-  danger: 'border-[#5a2a24] text-[var(--color-danger)] bg-[#2a1513]',
-  info: 'border-[#2f3f52] text-[var(--color-info)] bg-[#151b22]',
+  warning: 'border-[var(--notice-warning-border)] text-[var(--color-gold-soft)] bg-[var(--notice-warning-bg)]',
+  danger: 'border-[var(--notice-danger-border)] text-[var(--color-danger)] bg-[var(--notice-danger-bg)]',
+  info: 'border-[var(--notice-info-border)] text-[var(--color-info)] bg-[var(--notice-info-bg)]',
   neutral: 'border-[var(--color-line)] text-[var(--color-ink-soft)] bg-[var(--color-elevated)]',
 }
 

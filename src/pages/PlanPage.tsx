@@ -149,7 +149,7 @@ export function PlanPage() {
                   </button>
                 </div>
               )}
-              <div className="mt-5 flex items-start gap-2 rounded-xl border border-[#5a3d16] bg-[#2a1f10] px-3 py-2.5 text-[12px] text-[var(--color-gold-soft)]">
+              <div className="mt-5 flex items-start gap-2 rounded-xl border border-[var(--notice-warning-border)] bg-[var(--notice-warning-bg)] px-3 py-2.5 text-[12px] text-[var(--color-gold-soft)]">
                 <AlertTriangle size={14} className="mt-0.5 shrink-0" />
                 <button type="button" className="text-start" onClick={() => navigate('/work/work-wh-1')}>
                   {t('plan.capacityConflict')}

@@ -332,7 +332,7 @@ export function AskSteveRoot() {
               style={{ height: panelHeightPx }}
             >
               <div className="flex min-h-0 flex-1">
-                <aside className="hidden w-[220px] shrink-0 flex-col border-e border-[var(--color-steve-border)] bg-[#141310] sm:flex">
+                <aside className="hidden w-[220px] shrink-0 flex-col border-e border-[var(--color-steve-border)] bg-[var(--ask-aside-bg)] sm:flex">
                   <div className="flex items-center justify-between gap-2 px-3 py-3">
                     <div className="text-[13px] text-[var(--color-steve-text)]">{t('shell.askSteve')}</div>
                     <button type="button" className="inline-flex items-center gap-1 text-[11px] text-[var(--color-steve-green-bright)]" onClick={() => setMessages([])}>
@@ -354,7 +354,7 @@ export function AskSteveRoot() {
                           thread === th.id ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-muted)] hover:bg-[var(--color-steve-elevated)]',
                         )}
                       >
-                        <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', thread === th.id ? 'bg-[var(--color-steve-green-bright)]' : 'bg-[#3a3832]')} />
+                        <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', thread === th.id ? 'bg-[var(--color-steve-green-bright)]' : 'bg-[var(--steve-dot-idle)]')} />
                         <span className="truncate">{th.title}</span>
                       </button>
                     ))}
@@ -588,10 +588,10 @@ function ControlRoomCard({
         <Metric label={t('agents.needsAttention')} value={String(openRisk)} tone="bad" />
         <Metric label={t('today.pendingApprovals')} value={String(pendingPurchases.length + pendingTx.length)} tone="good" />
       </div>
-      <div className="mt-3 h-16 rounded-lg border border-[var(--color-steve-border)] bg-[#12110e] px-3 py-2">
+      <div className="mt-3 h-16 rounded-lg border border-[var(--color-steve-border)] bg-[var(--ask-inset-bg)] px-3 py-2">
         <div className="text-[10px] text-[var(--color-steve-text-faint)]">{trendTitle}</div>
         <svg viewBox="0 0 200 40" className="mt-1 h-8 w-full">
-          <polyline fill="none" stroke="#3ecf8e" strokeWidth="2" points="0,28 30,24 60,26 90,18 120,20 150,12 180,14 200,8" />
+          <polyline fill="none" stroke="var(--chart-1)" strokeWidth="2" points="0,28 30,24 60,26 90,18 120,20 150,12 180,14 200,8" />
         </svg>
       </div>
       <div className="mt-3 text-[12px] text-[var(--color-steve-warning)]">
@@ -680,7 +680,7 @@ function InventoryCard({
 
 function Metric({ label, value, tone }: { label: string; value: string; tone?: 'good' | 'bad' }) {
   return (
-    <div className="rounded-lg border border-[var(--color-steve-border)] bg-[#12110e] px-2.5 py-2">
+    <div className="rounded-lg border border-[var(--color-steve-border)] bg-[var(--ask-inset-bg)] px-2.5 py-2">
       <div className="text-[10px] text-[var(--color-steve-text-faint)]">{label}</div>
       <div className={cn('mt-1 text-[13px]', tone === 'good' && 'text-[var(--color-steve-green-bright)]', tone === 'bad' && 'text-[var(--color-steve-danger)]')}>{value}</div>
     </div>

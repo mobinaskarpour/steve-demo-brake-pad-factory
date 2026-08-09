@@ -88,16 +88,16 @@ export function IntelligencePage() {
                   <AreaChart data={state.fuelSeries}>
                     <defs>
                       <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#3ecf8e" stopOpacity={0.35} />
-                        <stop offset="100%" stopColor="#3ecf8e" stopOpacity={0} />
+                        <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.35} />
+                        <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid stroke="#2a2a28" vertical={false} />
-                    <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#8a8478' }} axisLine={false} tickLine={false} />
-                    <YAxis orientation={isRtl ? 'right' : 'left'} tick={{ fontSize: 12, fill: '#8a8478' }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ background: '#17150f', border: '1px solid #2a2720', borderRadius: 12 }} formatter={(value) => [d(String(value)), '']} />
-                    <Area type="monotone" dataKey="benzine" stroke="#3ecf8e" fill="url(#g1)" strokeWidth={2} name={chartPrimary} />
-                    <Area type="monotone" dataKey="gasoil" stroke="#c5a059" fillOpacity={0} strokeWidth={2} name={chartSecondary} />
+                    <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+                    <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'var(--chart-tick)' }} axisLine={false} tickLine={false} />
+                    <YAxis orientation={isRtl ? 'right' : 'left'} tick={{ fontSize: 12, fill: 'var(--chart-tick)' }} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={{ background: 'var(--chart-tooltip-bg)', border: '1px solid var(--color-steve-border)', borderRadius: 12 }} formatter={(value) => [d(String(value)), '']} />
+                    <Area type="monotone" dataKey="benzine" stroke="var(--chart-1)" fill="url(#g1)" strokeWidth={2} name={chartPrimary} />
+                    <Area type="monotone" dataKey="gasoil" stroke="var(--chart-2)" fillOpacity={0} strokeWidth={2} name={chartSecondary} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>

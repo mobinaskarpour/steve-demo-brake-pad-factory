@@ -2,6 +2,7 @@
 export const enContent = {
   "config": {
     "brandName": "AryaTormoz Brake Factory",
+    "shortName": "AryaTormoz",
     "tagline": "Unified business command center",
     "scopeLabel": "AryaTormoz Brake Factory • All businesses",
     "askSteveIntro": "Ask about operations, approvals, risks, and today's priorities.",

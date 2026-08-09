@@ -13,7 +13,10 @@
     "myWork": "My work queue",
     "askSteve": "Ask Steve",
     "language": "Language",
-    "scope": "Scope"
+    "scope": "Scope",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark"
   },
   "actions": {
     "approve": "Approve",

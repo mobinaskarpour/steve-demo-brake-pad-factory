@@ -9,6 +9,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      html[data-theme="dark"] { background: #101214; color-scheme: dark; }
+      html[data-theme="light"] { background: #f1f3f4; color-scheme: light; }
+    </style>
+    <script>
+      // Resolve the stored theme before first paint so the shell never flashes.
+      (function () {
+        try {
+          var t = localStorage.getItem('steve-theme')
+          if (t !== 'light' && t !== 'dark') t = 'dark'
+          document.documentElement.dataset.theme = t
+          document.documentElement.style.colorScheme = t
+        } catch (e) {
+          document.documentElement.dataset.theme = 'dark'
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
