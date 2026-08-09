@@ -50,6 +50,13 @@ export interface InventoryItem {
   alertId?: string
   history: { date: string; delta: number; note: string }[]
   imageSrc?: string
+  /** Supply-dashboard fields: how much production needs vs what is inbound */
+  requiredQty?: number
+  incomingQty?: number
+  incomingEta?: string
+  supplier?: string
+  /** Production orders blocked or slowed by a shortage of this material */
+  affectedOrderIds?: string[]
 }
 
 export interface PurchaseRequest {
@@ -195,6 +202,25 @@ export interface Thread {
   messages: Message[]
 }
 
+/** Operational Agent Dashboard responsibility — Steve shell stays the same; content packs differ. */
+export type DashboardKind =
+  | 'generic'
+  | 'inspection'
+  | 'settlement'
+  | 'crm'
+  | 'deals'
+  | 'matters'
+  | 'advisory'
+  | 'production'
+  | 'supply'
+  | 'finance-settlement'
+  | 'inventory'
+  | 'customer-supply'
+  | 'procurement'
+  | 'line-control'
+  | 'inquiries'
+  | 'contracts'
+
 export interface AgentProfile {
   id: string
   name: string
@@ -211,6 +237,73 @@ export interface AgentProfile {
   decisionIds: string[]
   systems: string[]
   activity: ActivityEvent[]
+  /** Named customer operational dashboard kind */
+  dashboardKind?: DashboardKind
+  /** Pin on Agent Dashboard hub by default */
+  pinDefault?: boolean
+}
+
+/** Planning → Materials → Production → QC → Hold/Rework → Finished Goods → Shipment */
+export type ProductionStage = 'planning' | 'materials' | 'production' | 'qc' | 'hold' | 'finished_goods' | 'shipment'
+
+export interface ProductionOrder {
+  id: string
+  soId?: string
+  itemSku: string
+  quantity: number
+  unit: string
+  stage: ProductionStage
+  press?: string
+  batchIds: string[]
+  dueDate: string
+  status: StatusTone
+  blocker?: string
+  /** Inventory items whose shortage is holding this order back */
+  materialBlockerIds?: string[]
+  workId?: string
+}
+
+export interface ProductionBatch {
+  id: string
+  productionOrderId?: string
+  press: string
+  stage: string
+  qcStatus: 'pending' | 'passed' | 'failed' | 'quarantined'
+  qcRecordId?: string
+  quantity: number
+  unit: string
+  startedAt: string
+  note: string
+  workId?: string
+}
+
+export type SettlementStatus =
+  | 'assigned'
+  | 'in_progress'
+  | 'submitted'
+  | 'pending_confirmation'
+  | 'confirmed'
+  | 'needs_rework'
+  | 'ready_for_settlement'
+  | 'partially_settled'
+  | 'settled'
+
+export interface SettlementAssignment {
+  id: string
+  agentName: string
+  unitId: string
+  unitLabel: string
+  task: string
+  assignedDate: string
+  dueDate: string
+  completion: string
+  evidence: string
+  confirmation: string
+  approvedAmount: number
+  paidAmount: number
+  outstandingAmount: number
+  status: SettlementStatus
+  workId?: string
 }
 
 export interface MapNode {
@@ -288,6 +381,9 @@ export interface DemoState {
   activityFeed: ActivityEvent[]
   fuelSeries: { day: string; benzine: number; gasoil: number }[]
   visualFeeds: VisualFeed[]
+  productionOrders: ProductionOrder[]
+  productionBatches: ProductionBatch[]
+  settlements: SettlementAssignment[]
   toast?: string | null
 }
 
@@ -304,5 +400,11 @@ export type DemoAction =
   | { type: 'CREATE_TASK_FROM_THREAD'; threadId: string }
   | { type: 'MARK_THREAD_READ'; threadId: string }
   | { type: 'CLOSE_CORRESPONDENCE'; id: string }
+  | { type: 'CONFIRM_SETTLEMENT'; id: string }
+  | { type: 'MARK_SETTLEMENT_PAID'; id: string; amount?: number }
+  | { type: 'ADVANCE_PRODUCTION_ORDER'; id: string }
+  | { type: 'RELEASE_PRODUCTION_HOLD'; id: string }
+  | { type: 'SET_BATCH_QC'; id: string; qcStatus: ProductionBatch['qcStatus'] }
+  | { type: 'RECEIVE_INCOMING_SUPPLY'; id: string }
   | { type: 'SHOW_TOAST'; text: string }
   | { type: 'CLEAR_TOAST' }

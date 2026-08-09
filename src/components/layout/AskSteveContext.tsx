@@ -28,7 +28,7 @@ const AskSteveContext = createContext<AskCtx | null>(null)
 
 /** Matches panel + dock + root padding so content never sits under Ask Steve */
 const SAFE = {
-  collapsed: 118,
+  collapsed: 136,
   expanded: 700,
   focused: 900,
 } as const

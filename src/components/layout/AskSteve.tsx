@@ -18,18 +18,26 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { appConfig } from '../../config'
+import {
+  askSteveDefaultPrompts,
+  resolveAskSteve,
+  type AskAction,
+  type AskFocus,
+  type AskRich,
+  type AskTurn,
+} from '../../domain/askSteveEngine'
 import { useDemo } from '../../domain/store'
 import { getEnConfig } from '../../i18n/enContent'
 import { Ltr, useLocale } from '../../i18n/LocaleProvider'
 import { cn } from '../../lib/utils'
-import { useAskSteve, type AskContext } from './AskSteveContext'
+import { useAskSteve } from './AskSteveContext'
 
 type ChatMsg = {
   id: string
   role: 'user' | 'steve'
   text: string
-  rich?: 'control-room' | 'approvals' | 'inventory'
-  actions?: { label: string; to?: string; run?: () => void }[]
+  rich?: AskRich
+  actions?: AskAction[]
 }
 
 function buildThreads(locale: 'fa' | 'en') {
@@ -41,60 +49,6 @@ function buildThreads(locale: 'fa' | 'en') {
     title: seed.length > 42 ? `${seed.slice(0, 40)}…` : seed,
     seed,
   }))
-}
-
-const FA_PATH_PROMPTS = {
-  map: ['مهم‌ترین ریسک این نود چیست؟', 'KPIهای این واحد را توضیح بده', 'کارهای باز را نشان بده', 'داشبورد عامل را باز کن'],
-  agents: ['خلاصه وضعیت این عامل چیست؟', 'تاییدهای باز را لیست کن', 'ریسک‌های باز را بگو'],
-  work: ['کدام کار اولویت بالاتری دارد؟', 'مرحله بعدی این کار چیست؟'],
-  purchaseFallback: ['این درخواست چرا ایجاد شده؟', 'آیا موجودی واقعاً بحرانی است؟', 'هزینه را با خرید قبلی مقایسه کن', 'اگر رد شود چه تاخیری می‌افتد؟'],
-  defaultFallback: [
-    'امروز چه چیزی نیاز به توجه من دارد؟',
-    'درخواست‌های منتظر تأیید را نشان بده',
-    'وضعیت موجودی را بررسی کن',
-    'سه اقدام پیشنهادی برای امروز چیست؟',
-  ],
-} as const
-
-const EN_PATH_PROMPTS = {
-  map: ['What is the top risk on this node?', 'Explain this unit’s KPIs', 'Show open work items', 'Open the agent dashboard'],
-  agents: ['Summarize this agent’s status', 'List open approvals', 'What open risks remain?'],
-  work: ['Which work item is highest priority?', 'What is the next stage for this work?'],
-  purchaseFallback: [
-    'Why was this request created?',
-    'Is inventory actually critical?',
-    'Compare cost with the previous purchase',
-    'What delay if it is rejected?',
-  ],
-} as const
-
-function hasAny(q: string, needles: string[]) {
-  const lower = q.toLowerCase()
-  return needles.some((n) => lower.includes(n.toLowerCase()))
-}
-
-function defaultPrompts(pathname: string, ctx: AskContext | null, locale: 'fa' | 'en'): string[] {
-  if (locale === 'en' && ctx?.promptsEn?.length) return ctx.promptsEn
-  if (locale !== 'en' && ctx?.prompts?.length) return ctx.prompts
-
-  const enPrompts = (getEnConfig().askPrompts as string[] | undefined) || []
-  const configured = (appConfig as { askDefaultPrompts?: string[] }).askDefaultPrompts
-
-  if (pathname.startsWith('/records/purchase')) {
-    if (locale === 'en') return enPrompts.slice(0, 4).length ? enPrompts.slice(0, 4) : [...EN_PATH_PROMPTS.purchaseFallback]
-    return configured?.slice(0, 4) || [...FA_PATH_PROMPTS.purchaseFallback]
-  }
-  if (pathname.startsWith('/map')) {
-    return locale === 'en' ? [...EN_PATH_PROMPTS.map] : [...FA_PATH_PROMPTS.map]
-  }
-  if (pathname.startsWith('/agents')) {
-    return locale === 'en' ? [...EN_PATH_PROMPTS.agents] : [...FA_PATH_PROMPTS.agents]
-  }
-  if (pathname.startsWith('/work')) {
-    return locale === 'en' ? [...EN_PATH_PROMPTS.work] : [...FA_PATH_PROMPTS.work]
-  }
-  if (locale === 'en') return enPrompts.length ? enPrompts : [...EN_PATH_PROMPTS.purchaseFallback]
-  return configured || [...FA_PATH_PROMPTS.defaultFallback]
 }
 
 export function AskSteveRoot() {
@@ -109,11 +63,17 @@ export function AskSteveRoot() {
   const [thread, setThread] = useState('t1')
   const [threadQuery, setThreadQuery] = useState('')
   const [pinned, setPinned] = useState(false)
+  /** Subject of the last exchange, so pronoun follow-ups ("why?", "open it") resolve. */
+  const [lastFocus, setLastFocus] = useState<AskFocus | null>(null)
 
   const threads = useMemo(() => buildThreads(locale), [locale])
   const visibleThreads = threads.filter((th) => !threadQuery || th.title.toLowerCase().includes(threadQuery.toLowerCase()))
 
-  const prompts = useMemo(() => defaultPrompts(location.pathname, context, locale), [location.pathname, context, locale])
+  const prompts = useMemo(() => {
+    if (locale === 'en' && context?.promptsEn?.length) return context.promptsEn
+    if (locale !== 'en' && context?.prompts?.length) return context.prompts
+    return askSteveDefaultPrompts({ pathname: location.pathname, locale, state, context, openAlerts })
+  }, [location.pathname, context, locale, state, openAlerts])
   const open = mode !== 'collapsed'
   const enCfg = getEnConfig() as Record<string, string>
   const brandName = locale === 'en' ? enCfg.brandName || appConfig.brandName : appConfig.brandName
@@ -128,183 +88,69 @@ export function AskSteveRoot() {
   useEffect(() => {
     if (!open) return
     setMessages([])
+    setLastFocus(null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open ? 'o' : 'c', context?.label, location.pathname, locale])
-
-  function answer(q: string): ChatMsg {
-    if (hasAny(q, ['تصویر', 'پایش', 'دوربین', 'نمای', 'عکس', 'رسانه', 'visual', 'camera', 'monitoring', 'feed', 'photo', 'media'])) {
-      const feed = state.visualFeeds?.[0]
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: feed
-          ? t('ask.replyVisual', {
-              title: loc(feed.title, 'visualFeeds', feed.id, 'title'),
-              location: loc(feed.location, 'visualFeeds', feed.id, 'location'),
-              time: feed.time,
-            })
-          : t('ask.replyNoVisual'),
-        actions: [
-          ...(feed?.recordType && feed.recordId
-            ? [{ label: t('communication.openRecord'), to: recordPath(feed.recordType, feed.recordId) }]
-            : []),
-          { label: t('ask.openMonitoring'), to: '/agents?lane=cameras' },
-          ...(feed ? [{ label: t('ask.viewFeed'), to: feed.unitId ? recordPath('unit', feed.unitId) : '/agents' }] : []),
-        ],
-      }
-    }
-
-    if (hasAny(q, ['اتاق کنترل', 'کنترل اجرایی', 'خلاصه', 'control room', 'executive', 'summary', 'summarize'])) {
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: t('ask.replyControlRoom'),
-        rich: 'control-room',
-        actions: [
-          { label: t('ask.openFullDashboard'), to: '/agents' },
-          { label: t('ask.approveId', { id: 'TX-442' }), to: recordPath('transaction', 'TX-442') },
-        ],
-      }
-    }
-    if (hasAny(q, ['موجودی', 'انبار', 'بحرانی', 'inventory', 'warehouse', 'stock', 'sku', 'reorder'])) {
-      const inv = state.inventory.find((i) => i.status === 'danger') || state.inventory[0]
-      const days = (inv.onHand / Math.max(inv.avgDailyUse, 0.1)).toFixed(1)
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: t('ask.replyInventory', {
-          sku: inv.sku,
-          onHand: inv.onHand,
-          unit: inv.unit,
-          avg: inv.avgDailyUse,
-          days,
-          pr: inv.purchaseRequestId || '',
-        }),
-        rich: 'inventory',
-        actions: [
-          { label: t('record.inventory'), to: recordPath('inventory', inv.id) },
-          ...(inv.purchaseRequestId ? [{ label: t('ask.openRequest'), to: recordPath('purchase', inv.purchaseRequestId) }] : []),
-        ],
-      }
-    }
-    if (hasAny(q, ['توجه', 'مهم', 'ریسک', 'attention', 'important', 'risk', 'priority', 'needs me'])) {
-      const top = openAlerts[0]
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: top
-          ? t('ask.replyPriority', {
-              title: loc(top.title, 'alerts', top.id, 'title'),
-              summary: loc(top.summary, 'alerts', top.id, 'summary'),
-            })
-          : t('ask.replyNoCritical'),
-        actions: top
-          ? [{ label: t('actions.view'), to: recordPath(top.recordType, top.recordId) }]
-          : [{ label: t('today.workQueue'), to: '/work' }],
-      }
-    }
-    if (hasAny(q, ['فروش', 'جایگاه', 'sales', 'station', 'fuel', 'zabol'])) {
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: t('ask.replySales'),
-        actions: [
-          { label: t('ask.fuelUnit'), to: recordPath('unit', 'unit-fuel') },
-          { label: t('nav.intelligence'), to: '/intelligence' },
-        ],
-      }
-    }
-    if (hasAny(q, ['تأیید', 'تایید', 'درخواست', 'approval', 'approve', 'request', 'purchase', 'pending'])) {
-      const pending = state.purchases.filter((p) => p.status === 'pending')
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: pending.length
-          ? t('ask.replyPending', { list: pending.map((p) => `${p.id} (${p.amountLabel})`).join(locale === 'en' ? ', ' : '، ') })
-          : t('ask.replyNoPending'),
-        rich: 'approvals',
-        actions: pending[0]
-          ? [
-              { label: t('today.openId', { id: pending[0].id }), to: recordPath('purchase', pending[0].id) },
-              {
-                label: t('ask.approveId', { id: pending[0].id }),
-                run: () => {
-                  dispatch({ type: 'APPROVE_PURCHASE', id: pending[0].id })
-                  collapse()
-                  navigate(recordPath('purchase', pending[0].id))
-                },
-              },
-            ]
-          : [],
-      }
-    }
-    if (hasAny(q, ['داشبورد', 'عامل', 'dashboard', 'agent'])) {
-      const agentId = context?.recordId?.startsWith('agent') ? context.recordId : 'agent-wh'
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: t('ask.replyAgentDash'),
-        actions: [{ label: t('actions.openAgent'), to: `/agents?agent=${agentId}` }],
-      }
-    }
-    if (hasAny(q, ['پیگیری', 'ایجاد کار', 'follow up', 'follow-up', 'create task', 'create work'])) {
-      const topic = context?.label || t('ask.currentTopic')
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: t('ask.replyFollowUp'),
-        actions: [
-          {
-            label: t('ask.createFollowUp'),
-            run: () => {
-              dispatch({
-                type: 'CREATE_FOLLOWUP',
-                payload: {
-                  title: t('ask.followUpTitle', { label: topic }),
-                  unitId: 'unit-holding',
-                  fromRecordType: context?.recordType || 'ask',
-                  fromRecordId: context?.recordId || 'steve',
-                  owner: followUpOwner,
-                },
-              })
-              collapse()
-              navigate('/work')
-            },
-          },
-        ],
-      }
-    }
-    if (hasAny(q, ['چرا', 'why']) && (context?.recordType === 'purchase' || hasAny(q, ['درخواست', 'request', 'purchase', 'pr-']))) {
-      const pr = state.purchases.find((p) => p.id === (context?.recordId || 'PR-184')) || state.purchases[0]
-      return {
-        id: `s-${Date.now()}`,
-        role: 'steve',
-        text: pr
-          ? t('ask.replyWhy', { id: pr.id, reason: loc(pr.reason, 'purchases', pr.id, 'reason') })
-          : t('ask.notFound'),
-        actions: pr ? [{ label: t('today.openId', { id: pr.id }), to: recordPath('purchase', pr.id) }] : [],
-      }
-    }
-    return {
-      id: `s-${Date.now()}`,
-      role: 'steve',
-      text: t('ask.fallback'),
-      actions: prompts.slice(0, 2).map((p) => ({ label: p.slice(0, 28), run: () => send(p) })),
-    }
-  }
 
   function send(text?: string) {
     const q = (text ?? input).trim()
     if (!q) return
     if (mode === 'collapsed') expand()
-    const reply = answer(q)
-    setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: 'user', text: q }, reply])
+
+    const history: AskTurn[] = messages.map((m) => ({ role: m.role, text: m.text }))
+    const reply = resolveAskSteve({
+      question: q,
+      locale,
+      pathname: location.pathname,
+      context,
+      history,
+      state,
+      openAlerts,
+      t,
+      loc,
+      lastFocus,
+    })
+
+    if (reply.focus !== undefined) setLastFocus(reply.focus)
+    setMessages((prev) => [
+      ...prev,
+      { id: `u-${Date.now()}`, role: 'user', text: q },
+      { id: `s-${Date.now()}`, role: 'steve', text: reply.text, rich: reply.rich, actions: reply.actions },
+    ])
     setInput('')
   }
 
-  function runAction(a: { label: string; to?: string; run?: () => void }) {
-    if (a.run) a.run()
-    else if (a.to) {
+  function runAction(a: AskAction) {
+    const id = a.payload?.id
+    if (a.run === 'approve-purchase' && id) {
+      dispatch({ type: 'APPROVE_PURCHASE', id })
+      collapse()
+      navigate(recordPath('purchase', id))
+      return
+    }
+    if (a.run === 'approve-transaction' && id) {
+      dispatch({ type: 'APPROVE_TRANSACTION', id })
+      collapse()
+      navigate(recordPath('transaction', id))
+      return
+    }
+    if (a.run === 'create-followup') {
+      const label = a.payload?.label || context?.label || ''
+      dispatch({
+        type: 'CREATE_FOLLOWUP',
+        payload: {
+          title: locale === 'en' ? `Follow up: ${label}` : `پیگیری: ${label}`,
+          unitId: a.payload?.unitId || 'unit-holding',
+          fromRecordType: a.payload?.recordType || context?.recordType || 'ask',
+          fromRecordId: a.payload?.recordId || context?.recordId || 'steve',
+          owner: followUpOwner,
+        },
+      })
+      collapse()
+      navigate('/work')
+      return
+    }
+    if (a.to) {
       collapse()
       navigate(a.to)
     }
@@ -562,7 +408,7 @@ function ControlRoomCard({
   trendTitle,
 }: {
   state: ReturnType<typeof useDemo>['state']
-  onAction: (a: { label: string; to?: string; run?: () => void }) => void
+  onAction: (a: AskAction) => void
   recordPath: (t: string, id: string) => string
   brandName: string
   trendTitle: string
@@ -629,7 +475,7 @@ function ApprovalsCard({
   recordPath,
 }: {
   state: ReturnType<typeof useDemo>['state']
-  onAction: (a: { label: string; to?: string; run?: () => void }) => void
+  onAction: (a: AskAction) => void
   recordPath: (t: string, id: string) => string
 }) {
   const pending = state.purchases.filter((p) => p.status === 'pending')
@@ -653,7 +499,7 @@ function InventoryCard({
   recordPath,
 }: {
   state: ReturnType<typeof useDemo>['state']
-  onAction: (a: { label: string; to?: string; run?: () => void }) => void
+  onAction: (a: AskAction) => void
   recordPath: (t: string, id: string) => string
 }) {
   const { t } = useTranslation()

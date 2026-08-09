@@ -20,6 +20,7 @@ import { cn } from '../lib/utils'
 import { VisualMonitoring } from '../components/ui/VisualMonitoring'
 import { useLocale } from '../i18n/LocaleProvider'
 import { getEnBrief } from '../i18n/enContent'
+import { computeTodayBrief } from '../domain/computeTodayBrief'
 
 const icons = [AlertTriangle, ClipboardCheck, Plane, Users]
 
@@ -106,7 +107,7 @@ export function TodayPage() {
   const { state, dispatch, openAlerts, recordPath } = useDemo()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const { locale, isRtl, loc } = useLocale()
+  const { locale, isRtl, loc, tToast } = useLocale()
   const [briefOpen, setBriefOpen] = useState(true)
   const [view, setView] = useState<'brief' | 'dashboard'>('brief')
   const [widgets, setWidgets] = useState<WidgetId[]>(() => readWidgets())
@@ -123,15 +124,14 @@ export function TodayPage() {
   const primaryUnit = state.units.find((u) => u.id === 'unit-fuel') || state.units.find((u) => u.id !== 'unit-holding') || state.units[0]
 
   const brief = useMemo(() => {
-    if (locale === 'fa') return state.brief
-    const en = getEnBrief()
-    return {
-      greeting: (en.greeting as string) || state.brief.greeting,
-      dateLabel: (en.dateLabel as string) || state.brief.dateLabel,
-      paragraphs: (en.paragraphs as string[]) || state.brief.paragraphs,
-      lines: (en.lines as { label: string; text: string }[]) || state.brief.lines,
-    }
-  }, [locale, state.brief])
+    const enStatic = getEnBrief()
+    return computeTodayBrief(state, locale === 'en' ? 'en' : 'fa', {
+      greeting: (enStatic.greeting as string) || state.brief.greeting,
+      dateLabel: (enStatic.dateLabel as string) || state.brief.dateLabel,
+      paragraphs: (enStatic.paragraphs as string[]) || state.brief.paragraphs,
+      lines: (enStatic.lines as { label: string; text: string }[]) || state.brief.lines,
+    })
+  }, [locale, state])
 
   const briefLinks = useMemo(() => {
     const links: { match: string; to: string }[] = []
@@ -187,7 +187,7 @@ export function TodayPage() {
     <div className="steve-page space-y-4">
       {state.toast ? (
         <div className="fixed top-4 left-1/2 z-[80] -translate-x-1/2 rounded-full border border-[var(--color-steve-brief-border)] bg-[var(--color-steve-green-dim)] px-4 py-2 text-[12px] text-[var(--color-steve-green-bright)] shadow-lg">
-          {state.toast}
+          {tToast(state.toast)}
         </div>
       ) : null}
 
@@ -525,7 +525,7 @@ function MyDashboard({
             case 'receivables':
               return {
                 title: t('today.dashReceivables'),
-                body: t('today.approvalsQueued', { count: pendingPurchases + pendingTx }),
+                body: t('today.approvalsQueued', { count: pendingTx }),
                 to: '/work',
               }
             case 'people':

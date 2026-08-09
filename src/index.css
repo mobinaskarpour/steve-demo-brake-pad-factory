@@ -352,11 +352,11 @@ button, input, textarea, select { font: inherit; color: inherit; }
 }
 
 .steve-greeting {
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  color: var(--steve-heading);
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--color-steve-text);
 }
 
 .steve-asof {
@@ -427,6 +427,8 @@ button, input, textarea, select { font: inherit; color: inherit; }
 }
 
 .ask-steve-shell-open .ask-steve-panel {
+  position: relative;
+  z-index: 2;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-bottom: 0;
@@ -434,6 +436,8 @@ button, input, textarea, select { font: inherit; color: inherit; }
 }
 
 .ask-steve-shell-open .ask-steve-dock {
+  position: relative;
+  z-index: 1;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-top-color: var(--color-steve-border);
@@ -641,6 +645,40 @@ html[dir="rtl"] .steve-sidebar {
   border-left: 1px solid var(--steve-sidebar-border);
   border-right: 0;
 }
+
+/* —— Typography fidelity (Atlas/Steve reference) —— */
 html[dir="ltr"] body {
-  font-family: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", sans-serif;
+  font-size: 13.5px;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+html[dir="rtl"] body {
+  font-family: "Vazirmatn", ui-sans-serif, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.steve-greeting {
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+html[dir="rtl"] .steve-greeting {
+  font-weight: 400;
+  font-size: 27px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.steve-asof {
+  font-size: 13px;
+  line-height: 1.35;
+}
+.steve-brand {
+  font-weight: 500;
+  letter-spacing: 0.32em;
+}
+.steve-nav-item {
+  font-size: 12.5px;
+  line-height: 1.25;
 }

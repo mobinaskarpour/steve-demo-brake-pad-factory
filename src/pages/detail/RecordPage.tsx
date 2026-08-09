@@ -234,8 +234,8 @@ export function RecordPage() {
             <div className="mt-4 space-y-2">
               {emp.history.map((h, i) => (
                 <div key={i} className="rounded-xl bg-[var(--color-steve-elevated)] px-3 py-2 text-[12px]">
-                  {h.date} — {h.status}
-                  {h.note ? ` · ${h.note}` : ''}
+                  {loc(h.date, 'employees', emp.id, 'historyDate')} — {loc(h.status, 'employees', emp.id, 'historyStatus')}
+                  {h.note ? ` · ${loc(h.note, 'employees', emp.id, 'historyNote')}` : ''}
                 </div>
               ))}
             </div>

@@ -12,8 +12,8 @@ export function PageHero({
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 className="text-[28px] font-light tracking-tight text-[var(--color-ink)] md:text-[32px]">{title}</h1>
-        {subtitle ? <p className="mt-1 text-[14px] text-[var(--color-gold)]">{subtitle}</p> : null}
+        <h1 className="text-[26px] font-light tracking-tight text-[var(--color-ink)] md:text-[30px]">{title}</h1>
+        {subtitle ? <p className="mt-1 text-[13px] leading-snug text-[var(--color-gold)]">{subtitle}</p> : null}
       </div>
       {actions}
     </div>
@@ -67,8 +67,8 @@ export function SoftTabs({
           onClick={() => onChange(t.id)}
           className={
             value === t.id
-              ? 'border-b-2 border-[var(--color-green-bright)] pb-2.5 text-[13px] text-[var(--color-ink)]'
-              : 'pb-2.5 text-[13px] text-[var(--color-ink-faint)] hover:text-[var(--color-ink-soft)]'
+              ? 'border-b-2 border-[var(--color-green-bright)] pb-2 text-[12.5px] text-[var(--color-ink)]'
+              : 'pb-2 text-[12.5px] text-[var(--color-ink-faint)] hover:text-[var(--color-ink-soft)]'
           }
         >
           {t.label}

@@ -9,7 +9,6 @@ import { AskSteveProvider, useAskSteve } from './AskSteveContext'
 import { appConfig } from '../../config'
 import { useDemo } from '../../domain/store'
 import { LanguageSwitcher, ThemeSwitcher, useLocale } from '../../i18n/LocaleProvider'
-import { ensureEnglish } from '../../i18n/ensureEnglish'
 import { getEnConfig } from '../../i18n/enContent'
 
 function ShellInner() {
@@ -117,7 +116,7 @@ function ShellInner() {
                   setScopeOpen(false)
                 }}
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-steve-green-dim)] text-[11px] text-[var(--color-steve-text-muted)]">{locale === 'en' ? ensureEnglish(appConfig.user.initials) : appConfig.user.initials}</div>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-steve-green-dim)] text-[11px] text-[var(--color-steve-text-muted)]">{locale === 'en' ? appConfig.user.initialsEn || 'AG' : appConfig.user.initials}</div>
                 <ChevronDown size={12} className="text-[var(--color-steve-text-faint)]" />
               </button>
               {userOpen ? (

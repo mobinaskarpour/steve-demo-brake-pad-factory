@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, useReducer, type ReactNode } from 'react'
 import { useLocale } from '../i18n/LocaleProvider'
 import { deepEnsureEnglish } from '../i18n/ensureEnglish'
+import { nextProductionStage } from './agentDashboards'
 import { initialState, withExpandedWork } from './seed'
 import type { DemoAction, DemoState, WorkStage } from './types'
 
@@ -246,6 +247,128 @@ function reducer(state: DemoState, action: DemoAction): DemoState {
       return pushActivity(next, `مکاتبه ${c.number} بسته شد.`, 'مکاتبات', 'correspondence', c.id)
     }
 
+    case 'CONFIRM_SETTLEMENT': {
+      const s = state.settlements.find((x) => x.id === action.id)
+      if (!s || (s.status !== 'pending_confirmation' && s.status !== 'submitted')) return state
+      return pushActivity(
+        {
+          ...state,
+          settlements: state.settlements.map((x) =>
+            x.id === action.id
+              ? { ...x, status: 'ready_for_settlement', confirmation: 'تایید مدیریت', completion: x.completion || 'تایید شد' }
+              : x,
+          ),
+        },
+        `تخصیص ${s.id} تایید و آماده تسویه شد.`,
+        'مالی و تسویه',
+        'work',
+        s.workId || s.id,
+      )
+    }
+
+    case 'MARK_SETTLEMENT_PAID': {
+      const s = state.settlements.find((x) => x.id === action.id)
+      if (!s) return state
+      const pay = action.amount ?? s.outstandingAmount
+      const paid = Math.min(s.approvedAmount, s.paidAmount + pay)
+      const outstanding = Math.max(0, s.approvedAmount - paid)
+      return pushActivity(
+        {
+          ...state,
+          settlements: state.settlements.map((x) =>
+            x.id === action.id
+              ? {
+                  ...x,
+                  paidAmount: paid,
+                  outstandingAmount: outstanding,
+                  status: outstanding === 0 ? 'settled' : 'partially_settled',
+                }
+              : x,
+          ),
+        },
+        `پرداخت ${s.id} ثبت شد — مانده ${outstanding} میلیون تومان.`,
+        'مالی و تسویه',
+        'work',
+        s.workId || s.id,
+      )
+    }
+
+    case 'ADVANCE_PRODUCTION_ORDER': {
+      const o = state.productionOrders.find((x) => x.id === action.id)
+      if (!o || o.stage === 'shipment') return state
+      const stage = nextProductionStage(o.stage)
+      let next = {
+        ...state,
+        productionOrders: state.productionOrders.map((x) =>
+          x.id === action.id
+            ? { ...x, stage, status: stage === 'shipment' || stage === 'finished_goods' ? ('success' as const) : x.status, blocker: stage === 'production' ? undefined : x.blocker }
+            : x,
+        ),
+      }
+      return pushActivity(next, `دستور تولید ${o.id} به مرحله «${stage}» منتقل شد.`, 'تولید', 'work', o.workId || o.id)
+    }
+
+    case 'RELEASE_PRODUCTION_HOLD': {
+      const o = state.productionOrders.find((x) => x.id === action.id)
+      if (!o || o.stage !== 'hold') return state
+      const next = {
+        ...state,
+        productionOrders: state.productionOrders.map((x) => (x.id === action.id ? { ...x, stage: 'production' as const, status: 'warning' as const, blocker: undefined } : x)),
+      }
+      return pushActivity(next, `دستور تولید ${o.id} از Hold آزاد و به تولید بازگشت.`, 'تولید', 'work', o.workId || o.id)
+    }
+
+    case 'SET_BATCH_QC': {
+      const b = state.productionBatches.find((x) => x.id === action.id)
+      if (!b) return state
+      let next: DemoState = {
+        ...state,
+        productionBatches: state.productionBatches.map((x) => (x.id === action.id ? { ...x, qcStatus: action.qcStatus } : x)),
+      }
+      if (action.qcStatus === 'passed' && b.productionOrderId) {
+        next = {
+          ...next,
+          productionOrders: next.productionOrders.map((o) => (o.id === b.productionOrderId ? { ...o, stage: 'finished_goods', status: 'success' } : o)),
+          inventory: next.inventory.map((inv) =>
+            inv.id === 'inv-fg-8842'
+              ? { ...inv, onHand: inv.onHand + b.quantity, history: [{ date: 'امروز', delta: b.quantity, note: `ترخیص QC بچ ${b.id}` }, ...inv.history] }
+              : inv,
+          ),
+        }
+      }
+      if (action.qcStatus === 'quarantined' && b.productionOrderId) {
+        next = {
+          ...next,
+          productionOrders: next.productionOrders.map((o) =>
+            o.id === b.productionOrderId ? { ...o, stage: 'hold', status: 'danger', blocker: `بچ ${b.id} قرنطینه شد — منتظر بازآزمون` } : o,
+          ),
+        }
+      }
+      return pushActivity(next, `وضعیت کیفیت بچ ${b.id} به «${action.qcStatus}» تغییر کرد.`, 'کیفیت', 'work', b.workId || b.id)
+    }
+
+    case 'RECEIVE_INCOMING_SUPPLY': {
+      const inv = state.inventory.find((x) => x.id === action.id)
+      if (!inv || !inv.incomingQty) return state
+      const next = {
+        ...state,
+        inventory: state.inventory.map((x) =>
+          x.id === action.id
+            ? {
+                ...x,
+                onHand: x.onHand + x.incomingQty!,
+                incomingQty: 0,
+                incomingEta: undefined,
+                status: x.onHand + x.incomingQty! >= x.reorder ? ('success' as const) : ('warning' as const),
+                history: [{ date: 'امروز', delta: x.incomingQty || 0, note: 'ورود کالای در راه ثبت شد' }, ...x.history],
+              }
+            : x,
+        ),
+        alerts: state.alerts.map((a) => (a.recordId === action.id ? { ...a, status: 'resolved' as const } : a)),
+      }
+      return pushActivity(next, `ورود موجودی ${inv.sku} ثبت شد.`, 'انبار', 'inventory', inv.id)
+    }
+
     default:
       return state
   }
@@ -285,3 +408,6 @@ export function useDemo() {
   const openAlerts = useMemo(() => state.alerts.filter((a) => a.status === 'open'), [state.alerts])
   return useMemo(() => ({ ...ctx, state, openAlerts }), [ctx, state, openAlerts])
 }
+
+/** Pure reducer export for engine/state verification harnesses. */
+export { reducer as demoReducer }

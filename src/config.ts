@@ -7,7 +7,7 @@ export const appConfig = {
   tagline: 'مرکز فرماندهی یکپارچه کسب‌وکار',
   scopeLabel: 'کارخانه لنت ترمز آریاترمز • همه کسب‌وکارها',
   sidebarBlurb: 'تولید روزانه، سفارش تکمیل‌شده، پرونده‌ها و تصمیم‌های اجرایی',
-  user: { name: 'مهندس آرش آریا', role: 'مدیر کارخانه', initials: 'آا' },
+  user: { name: 'مهندس آرش آریا', role: 'مدیر کارخانه', initials: 'آا', initialsEn: 'AA' },
   todayLabel: 'امروز',
   planLabel: 'برنامه',
   intelligenceLabel: 'هوشمندی',

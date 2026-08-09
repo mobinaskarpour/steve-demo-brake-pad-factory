@@ -63,545 +63,661 @@ export const enContent = {
   },
   "units": {
     "unit-holding": {
-      "name": "Business unit",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
+      "name": "AryaTormoz Plant Management",
+      "kind": "Command center",
+      "kpiLabel": "Units under watch",
       "kpiValue": "9",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
+      "summary": "Unified oversight of planning, production, quality, procurement, warehousing, sales, and finance across the plant.",
       "alert": "Line downtime",
       "owner": "Eng. Arash Arya"
     },
     "unit-fuel": {
-      "name": "Business unit",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
-      "kpiValue": "11.6 item pair",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Line downtime",
-      "owner": "supervisor line press"
+      "name": "Production & Pressing",
+      "kind": "Production line",
+      "kpiLabel": "Output yesterday",
+      "kpiValue": "11.6k pairs",
+      "summary": "Mixing, hot pressing, curing, and finishing of brake pads on two 400-tonne hydraulic press lines.",
+      "alert": "Press 2 has been down since 06:40",
+      "owner": "Press Line Supervisor"
     },
     "unit-plan": {
-      "name": "Production planning",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
+      "name": "Production Planning",
+      "kind": "Planning",
+      "kpiLabel": "Open production orders",
       "kpiValue": "6",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Line downtime",
-      "owner": "item Operations"
+      "summary": "Translating sales orders into production orders, sequencing batches, and balancing press and curing-oven capacity.",
+      "alert": "PROD-1148 slipped because of the press stoppage",
+      "owner": "Planning Specialist"
     },
     "unit-agri": {
-      "name": "Business unit",
+      "name": "Quality Control",
       "kind": "Quality",
-      "kpiLabel": "KPI",
+      "kpiLabel": "Batch rejection rate",
       "kpiValue": "3.1%",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Quality hold",
-      "owner": "Owner Laboratory"
+      "summary": "Friction coefficient, shear, thickness, and NVH testing on a sample from every batch before product release.",
+      "alert": "Batch BATCH-2417 failed the friction test",
+      "owner": "Laboratory Manager"
     },
     "unit-proc": {
-      "name": "Business unit",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
+      "name": "Material Procurement",
+      "kind": "Procurement",
+      "kpiLabel": "Open requests",
       "kpiValue": "3",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Operational alert",
-      "owner": "item Procurement"
+      "summary": "Sourcing resin, fibres, mineral fillers, and backing plates from approved suppliers.",
+      "alert": "Friction material below reorder point",
+      "owner": "Procurement Specialist"
     },
     "unit-hr": {
-      "name": "Business unit",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
+      "name": "Maintenance",
+      "kind": "Maintenance",
+      "kpiLabel": "Open stoppages",
       "kpiValue": "1",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Line downtime",
-      "owner": "supervisor item"
+      "summary": "Preventive maintenance and repair of presses, the curing oven, mixers, and the finishing line.",
+      "alert": "Hydraulic leak on press 2",
+      "owner": "Maintenance Supervisor"
     },
     "unit-wh": {
-      "name": "Business unit",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
-      "kpiValue": "5 SKU",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Operational alert",
-      "owner": "supervisor Warehouse"
+      "name": "Material & Product Warehouse",
+      "kind": "Warehousing",
+      "kpiLabel": "Below reorder point",
+      "kpiValue": "5 SKUs",
+      "summary": "Raw materials, backing plates, packaging items, and finished goods ready to ship.",
+      "alert": "Phenolic resin SP-1068 close to stock-out",
+      "owner": "Warehouse Supervisor"
     },
     "unit-re": {
-      "name": "Business unit",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
+      "name": "Sales & Orders",
+      "kind": "Sales",
+      "kpiLabel": "Open orders",
       "kpiValue": "14",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Attendance delay",
-      "owner": "Manager Sales"
+      "summary": "OEM and aftermarket orders, delivery commitments, and shipping coordination with customers.",
+      "alert": "SO-3092 at risk of late delivery",
+      "owner": "Sales Manager"
     },
     "unit-fin": {
-      "name": "Business unit",
+      "name": "Finance",
       "kind": "Finance",
-      "kpiLabel": "KPI",
+      "kpiLabel": "Open approvals",
       "kpiValue": "3",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Payment approval required",
-      "owner": "Manager Finance"
+      "summary": "Supplier payments, per-batch costing, and control of line-downtime cost.",
+      "alert": "Press maintenance cost and emergency purchase pending",
+      "owner": "Finance Manager"
     },
     "unit-corr": {
-      "name": "Business unit",
-      "kind": "Unit",
-      "kpiLabel": "KPI",
+      "name": "Correspondence & Technical Records",
+      "kind": "Correspondence",
+      "kpiLabel": "Overdue letters",
       "kpiValue": "1",
-      "summary": "Operational unit in the AryaTormoz Brake Factory model.",
-      "alert": "Operational alert",
-      "owner": "item item"
+      "summary": "Logging and following up OEM customer correspondence, conformity reports, and corrective-action files — the exact approval flow is not yet finalised and is shown here as a demo example.",
+      "alert": "Customer corrective-action request unanswered",
+      "owner": "Technical Secretariat"
     }
   },
   "alerts": {
     "alert-inv-friction": {
-      "title": "Operational alert",
-      "summary": "Requires attention based on live demo evidence and linked records.",
+      "title": "Phenolic resin friction material shortage",
+      "summary": "Stock is at 14 sacks, roughly 2.3 days of cover. Purchase request BR-MR-184 is awaiting your approval.",
       "type": "Inventory"
     },
     "alert-qc-556": {
-      "title": "Quality hold",
-      "summary": "Requires attention based on live demo evidence and linked records.",
+      "title": "QC failure on batch BATCH-2417",
+      "summary": "The sample friction coefficient fell outside the allowed window; 980 kg of the batch was quarantined — QC-0241.",
       "type": "Quality"
     },
     "alert-press-stop": {
-      "title": "Line downtime",
-      "summary": "Requires attention based on live demo evidence and linked records.",
-      "type": "Line downtime"
+      "title": "Hydraulic press 2 stoppage",
+      "summary": "Hydraulic leak since 06:40; each shift of downtime removes about 2.8k pairs of output.",
+      "type": "Line stoppage"
     },
     "alert-fin-maint": {
-      "title": "Payment approval required",
-      "summary": "Requires attention based on live demo evidence and linked records.",
+      "title": "Approve press 2 maintenance cost",
+      "summary": "Transaction BR-MNT-442 for 320 million IRT is awaiting plant management approval.",
       "type": "Finance"
     },
     "alert-so-3092": {
-      "title": "Delivery commitment at risk",
-      "summary": "Requires attention based on live demo evidence and linked records.",
+      "title": "SO-3092 delivery commitment at risk",
+      "summary": "FG-8842 stock is not enough to complete the order; the 22 Mordad delivery cannot be met without a replacement batch.",
       "type": "Delivery commitment"
     },
     "alert-so-backlog": {
-      "title": "Operational alert",
-      "summary": "Requires attention based on live demo evidence and linked records.",
+      "title": "Production order PROD-1148 overdue",
+      "summary": "SO-3081 has been queued for nine days; PROD-1148 has not been issued because of the press 2 stoppage and is pushing the weekly plan back.",
       "type": "Sales order"
     },
     "alert-corr-412": {
-      "title": "Operational alert",
-      "summary": "Requires attention based on live demo evidence and linked records.",
+      "title": "Customer corrective-action request unanswered",
+      "summary": "Letter 412/K from Ghateh Gostar Pars requires an 8D report by 20 Mordad.",
       "type": "Correspondence"
     },
     "alert-hr-late": {
-      "title": "Attendance delay",
-      "summary": "Requires attention based on live demo evidence and linked records.",
+      "title": "Attendance delay for the press 2 operator",
+      "summary": "Ali Mousavi arrived 35 minutes late for the press line morning shift.",
       "type": "Attendance"
     }
   },
   "inventory": {
     "inv-oil-10w40": {
-      "sku": "resin item SP-1068 (Friction material)",
-      "warehouse": "Warehouse",
-      "unit": "bag 25 item"
+      "sku": "Phenolic resin SP-1068 (friction material)",
+      "warehouse": "Raw material warehouse",
+      "unit": "25 kg sack"
     },
     "inv-fiber": {
-      "sku": "item item AR-9",
-      "warehouse": "Warehouse",
-      "unit": "bag"
+      "sku": "Aramid fibre AR-9",
+      "warehouse": "Raw material warehouse",
+      "unit": "sack"
     },
     "inv-backplate": {
-      "sku": "item item item BP-24",
-      "warehouse": "Warehouse",
-      "unit": "unit"
+      "sku": "Steel backing plate BP-24",
+      "warehouse": "Raw material warehouse",
+      "unit": "pc"
     },
     "inv-powder": {
-      "sku": "item item item item",
-      "warehouse": "Warehouse",
+      "sku": "Black epoxy powder coating",
+      "warehouse": "Auxiliary material warehouse",
       "unit": "drum"
     },
     "inv-fg-8842": {
-      "sku": "item item FG-8842 — item item item",
-      "warehouse": "Warehouse",
+      "sku": "Finished goods FG-8842 — passenger disc brake pad",
+      "warehouse": "Finished goods warehouse",
       "unit": "pair"
     },
     "inv-pack": {
-      "sku": "carton item item item",
-      "warehouse": "Warehouse",
-      "unit": "unit"
+      "sku": "Cartons and shrink packaging",
+      "warehouse": "Finished goods warehouse",
+      "unit": "pc"
     }
   },
   "purchases": {
     "BR-MR-184": {
-      "title": "Emergency purchase request",
-      "reason": "Pending executive approval for a critical operational need.",
+      "title": "Emergency purchase of friction material — phenolic resin SP-1068",
+      "reason": "Stock has fallen to 14 sacks; at an average draw of 6 sacks per day that is roughly 2.3 days of cover, after which mixing for the next batches will stop.",
       "vendor": "",
       "amountLabel": "486 million IRT"
     },
     "BR-MR-191": {
-      "title": "Purchase / cost request",
-      "reason": "Pending executive approval for a critical operational need.",
+      "title": "Purchase epoxy powder coating for the finishing line",
+      "reason": "Approaching the reorder point before the FG-8845 production run starts.",
       "vendor": "",
       "amountLabel": "92 million IRT"
     },
     "PR-196": {
-      "title": "Purchase / cost request",
-      "reason": "Pending executive approval for a critical operational need.",
+      "title": "Purchase a spare die for press 2 (code T-118)",
+      "reason": "Wear on the current die is affecting final thickness and raising the risk of repeat QC rejections.",
       "vendor": "",
       "amountLabel": "264 million IRT"
     }
   },
   "transactions": {
     "BR-MNT-442": {
-      "title": "Maintenance payment",
+      "title": "Emergency maintenance cost for hydraulic press 2",
       "amountLabel": "320 million IRT",
-      "party": ""
+      "party": "",
+      "category": "Maintenance"
     },
     "TX-468": {
-      "title": "Payment transaction",
+      "title": "Scrap cost for rejected batch BATCH-2417",
       "amountLabel": "74 million IRT",
-      "party": ""
+      "party": "",
+      "category": "Scrap"
+    },
+    "BR-FRT-451": {
+      "title": "Emergency freight cost for raw materials",
+      "category": "Freight"
+    },
+    "BR-REV-460": {
+      "title": "Realised sales for the FG-8840 run — consolidated",
+      "category": "Sales"
     }
   },
   "employees": {
     "emp-mosavi": {
       "name": "Ali Mousavi",
-      "role": "Operator",
+      "role": "Press 2 Operator",
       "shift": ""
     },
     "emp-karimi": {
       "name": "Maryam Karimi",
-      "role": "Operator",
+      "role": "Quality Laboratory Inspector",
       "shift": ""
     },
     "emp-nouri": {
       "name": "Hossein Nouri",
-      "role": "Operator",
+      "role": "Raw Material Storekeeper",
       "shift": ""
     },
     "emp-rasouli": {
-      "name": "Rasouli",
-      "role": "Operator",
+      "name": "Saeed Rasouli",
+      "role": "Hydraulic Maintenance Technician",
       "shift": ""
     }
   },
-  "correspondence": {},
+  "correspondence": {
+    "BR-CORR-412": {
+      "number": "412/K",
+      "title": "Request for a corrective-action report on batch BATCH-2417",
+      "from": "Ghateh Gostar Pars — Quality Assurance",
+      "to": "AryaTormoz Brake Pad Factory",
+      "owner": "Technical Secretariat",
+      "summary": "The OEM customer has requested an 8D report and release documentation for subsequent batches by the stated deadline."
+    }
+  },
   "workItems": {
     "work-wh-1": {
-      "title": "Work item",
+      "title": "Emergency supply of phenolic resin friction material",
       "type": "Purchase",
       "stage": "Observe",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "BR-MR-184 was raised to prevent mixing and pressing from stopping on batch B-2419 onwards.",
       "owner": "Procurement Agent"
     },
     "work-wh-2": {
-      "title": "Work item",
+      "title": "Replenish powder coating for the finishing line",
       "type": "Purchase",
       "stage": "Prepare",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "BR-MR-191, ahead of the FG-8845 run.",
       "owner": "Warehouse Agent"
     },
     "work-maint-1": {
-      "title": "Work item",
-      "type": "Work",
+      "title": "Fix the hydraulic leak and restart press 2",
+      "type": "Maintenance",
       "stage": "Executing",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "Down since 06:40; valve replacement and main cylinder resealing, dependent on approval of BR-MNT-442.",
       "owner": "Maintenance Agent"
     },
     "work-qc-1": {
-      "title": "Work item",
+      "title": "Corrective action on rejected batch BATCH-2417",
       "type": "Quality",
       "stage": "Executing",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "QC-0241 record: 980 kg quarantined, sample retest, and review of the curing oven temperature profile.",
       "owner": "Quality Control Agent"
     },
     "work-fin-1": {
-      "title": "Maintenance payment approval",
+      "title": "Approve emergency maintenance cost for press 2",
       "type": "Finance",
       "stage": "Observe",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "Transaction BR-MNT-442 / APR-102 is awaiting plant manager approval.",
       "owner": "Finance Agent"
     },
     "work-fin-2": {
-      "title": "Work item",
+      "title": "Review the emergency material freight cost",
       "type": "Finance",
       "stage": "Executing",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "19% anomaly in freight cost — BR-FRT-451.",
       "owner": "Finance Agent"
     },
     "work-re-1": {
-      "title": "Work item",
-      "type": "Work",
+      "title": "Resolve the SO-3092 delivery commitment",
+      "type": "Sales",
       "stage": "Observe",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "A 640-pair shortfall of FG-8842 for the Ghateh Gostar Pars order; options are allocating from BATCH-2418 or a phased delivery.",
       "owner": "Sales Agent"
     },
     "work-plan-1": {
-      "title": "Work item",
-      "type": "Work",
+      "title": "Issue the production order for backlogged order SO-3081",
+      "type": "Planning",
       "stage": "Prepare",
-      "description": "Connected work item for the active demo scenario.",
-      "owner": "Agent Operations"
+      "description": "PROD-1148 can be issued once press 2 capacity is released.",
+      "owner": "Planning Agent"
     },
     "work-fuel-1": {
-      "title": "Work item",
-      "type": "Work",
+      "title": "Stabilise the press line 1 output rate",
+      "type": "Production",
       "stage": "Authorized",
-      "description": "Connected work item for the active demo scenario.",
-      "owner": "supervisor line press"
+      "description": "Offset part of the press 2 stoppage with a compressed shift on press 1.",
+      "owner": "Press Line Supervisor"
     },
     "work-ship-1": {
-      "title": "Work item",
-      "type": "Work",
+      "title": "Prepare shipment SH-1207",
+      "type": "Shipping",
       "stage": "Executing",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "Load 720 pairs of FG-8842 and issue shipping documents for the aftermarket customer.",
       "owner": "Sales Agent"
     },
     "work-proc-1": {
-      "title": "Work item",
-      "type": "Work",
+      "title": "Revise reorder points for fibre and resin",
+      "type": "Procurement",
       "stage": "Propose",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "Reset reorder points against actual 30-day consumption and supplier lead time.",
       "owner": "Procurement Agent"
     },
     "work-corr-1": {
-      "title": "Work item",
+      "title": "Reply to corrective-action letter 412/K",
       "type": "Correspondence",
       "stage": "Executing",
-      "description": "Connected work item for the active demo scenario.",
+      "description": "Prepare the 8D report and attach the BATCH-2417 retest results.",
       "owner": "Correspondence Agent"
     },
     "work-hr-1": {
-      "title": "Attendance follow-up",
-      "type": "Work",
+      "title": "Follow up on the press 2 operator delay",
+      "type": "Workforce",
       "stage": "Propose",
-      "description": "Connected work item for the active demo scenario.",
-      "owner": "supervisor line press"
+      "description": "35-minute delay logged; a conversation with the shift supervisor is required.",
+      "owner": "Press Line Supervisor"
+    },
+    "work-aux-1": {
+      "title": "Calibrate the curing oven thermocouple",
+      "type": "Quality",
+      "owner": "Quality Control Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-2": {
+      "title": "Cycle count raw materials in the warehouse",
+      "type": "Warehouse",
+      "owner": "Warehouse Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-3": {
+      "title": "Chase the resin supplier invoice",
+      "type": "Finance",
+      "owner": "Finance Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-4": {
+      "title": "Prepare the weekly production report",
+      "type": "Management",
+      "owner": "Planning Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-5": {
+      "title": "Inspect the press 1 dies",
+      "type": "Maintenance",
+      "owner": "Maintenance Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-6": {
+      "title": "Update the OEM customer file",
+      "type": "Sales",
+      "owner": "Sales Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-7": {
+      "title": "Audit the batch record sheets",
+      "type": "Quality",
+      "owner": "Quality Control Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-8": {
+      "title": "Archive the BATCH-2416 test certificate",
+      "type": "Correspondence",
+      "owner": "Correspondence Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-9": {
+      "title": "Review the material purchase approval ceiling",
+      "type": "Finance",
+      "owner": "Finance Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-10": {
+      "title": "Service mixer number 3",
+      "type": "Maintenance",
+      "owner": "Maintenance Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-11": {
+      "title": "Check the finished-goods issue note",
+      "type": "Warehouse",
+      "owner": "Warehouse Agent",
+      "description": "Routine plant work kept open in the day’s queue."
+    },
+    "work-aux-12": {
+      "title": "Settle the hydraulic maintenance contractor",
+      "type": "Finance",
+      "owner": "Finance Agent",
+      "description": "Routine plant work kept open in the day’s queue."
     }
   },
   "threads": {
     "thr-br-mr-184": {
-      "title": "Work item",
-      "channel": "Channel",
-      "preview": "Updated conversation"
+      "title": "Purchase approval BR-MR-184 — friction material",
+      "channel": "Procurement",
+      "preview": "Purchase request BR-MR-184 has been sent for approval."
     },
     "thr-br-mnt-442": {
-      "title": "Maintenance payment approval",
-      "channel": "Channel",
-      "preview": "Updated conversation"
+      "title": "Press 2 emergency maintenance and BR-MNT-442 approval",
+      "channel": "Maintenance",
+      "preview": "BR-MNT-442 is ready for approval."
     },
     "thr-qc-556": {
-      "title": "Quality corrective action",
-      "channel": "Channel",
-      "preview": "Updated conversation"
+      "title": "QC-0241 rejection on batch BATCH-2417",
+      "channel": "Quality",
+      "preview": "Batch BATCH-2417 has been quarantined."
     },
     "thr-so-3092": {
-      "title": "Work item",
-      "channel": "Channel",
-      "preview": "Updated conversation"
+      "title": "SO-3092 delivery commitment — Ghateh Gostar Pars",
+      "channel": "Sales",
+      "preview": "A 640-pair shortfall to complete the order."
     },
     "thr-corr-412": {
-      "title": "Work item",
-      "channel": "Channel",
-      "preview": "Updated conversation"
+      "title": "Customer letter 412/K — 8D report",
+      "channel": "Correspondence",
+      "preview": "The reply deadline is 20 Mordad."
     },
     "thr-hr-late": {
-      "title": "Attendance follow-up",
-      "channel": "Channel",
-      "preview": "Updated conversation"
+      "title": "Press line morning-shift delay",
+      "channel": "Production",
+      "preview": "Suggested opening a follow-up task."
     }
   },
   "agents": {
     "agent-exec": {
       "name": "Executive Oversight Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "role": "Command center",
+      "domain": "Plant management",
+      "summary": "Monitors the production line, quality, and supply together, and prioritises the plant manager’s decisions for today.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Items needing a decision",
           "value": "8",
-          "hint": "Current period"
+          "hint": "Today"
         },
         {
-          "label": "KPI",
+          "label": "Monthly goal progress",
           "value": "56%",
-          "hint": "Current period"
+          "hint": "5 active goals"
         },
         {
-          "label": "KPI",
+          "label": "Units in alert",
           "value": "5",
-          "hint": "Current period"
+          "hint": "Production, quality, maintenance, warehouse, sales"
+        },
+        {
+          "label": "Data freshness",
+          "value": "09:42",
+          "hint": "Last sync"
         }
       ]
     },
     "agent-fin": {
-      "name": "Finance Agent",
-      "role": "Specialist agent",
-      "domain": "Finance",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "name": "Finance & Settlements",
+      "role": "Finance & Settlements",
+      "domain": "Finance & Settlements",
+      "summary": "Cash is stable, but maintenance cost, an emergency purchase, and batch scrap are all in the approval queue.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Operating cash",
+          "value": "8.4 billion",
+          "hint": "After the payment queue"
+        },
+        {
+          "label": "Weekly sales",
+          "value": "3.12 billion",
+          "hint": "vs 7-day average"
+        },
+        {
+          "label": "Open approvals",
           "value": "3",
           "hint": "BR-MNT-442 · BR-FRT-451 · TX-468"
         },
         {
-          "label": "KPI",
+          "label": "Line downtime cost",
           "value": "210 million",
-          "hint": "Current period"
+          "hint": "Estimated today"
         }
       ]
     },
     "agent-wh": {
       "name": "Warehouse Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "role": "Material & product inventory",
+      "domain": "Warehousing",
+      "summary": "Friction material is below the reorder point, and finished-goods stock is also short for SO-3092.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Below reorder point",
           "value": "5",
-          "hint": "Current period"
+          "hint": "SKUs"
         },
         {
-          "label": "KPI",
+          "label": "Days of friction material left",
           "value": "2.3",
-          "hint": "Current period"
+          "hint": "Based on 7-day consumption"
         },
         {
-          "label": "KPI",
+          "label": "Open requests",
           "value": "3",
           "hint": "BR-MR-184 / BR-MR-191 / PR-196"
         },
         {
-          "label": "KPI",
-          "value": "1860 pair",
-          "hint": "Current period"
+          "label": "FG-8842 on hand",
+          "value": "1,860 pairs",
+          "hint": "Short for SO-3092"
         }
       ]
     },
     "agent-fuel": {
-      "name": "Press & Production Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "name": "Production",
+      "role": "Production operations",
+      "domain": "Production",
+      "summary": "Press line 1 is stable, but the press 2 stoppage has put today’s plan under pressure.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Output yesterday",
+          "value": "11.6k pairs",
+          "hint": "vs 7-day average"
+        },
+        {
+          "label": "Line efficiency (OEE)",
           "value": "74%",
-          "hint": "Current period"
+          "hint": "Impact of the press 2 stoppage"
         },
         {
-          "label": "KPI",
+          "label": "Batch in progress",
           "value": "BATCH-2418",
-          "hint": "Current period"
+          "hint": "Curing stage"
         },
         {
-          "label": "KPI",
+          "label": "Downtime today",
           "value": "3 hours",
-          "hint": "Current period"
+          "hint": "Press 2"
         }
       ]
     },
     "agent-plan": {
       "name": "Production Planning Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "role": "Planning & batch sequencing",
+      "domain": "Planning",
+      "summary": "Six production orders are open and one backlogged order is waiting for press capacity to be released.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Open production orders",
           "value": "6",
-          "hint": "Current period"
+          "hint": "PROD-1141 to PROD-1148"
         },
         {
-          "label": "KPI",
+          "label": "Orders without a production order",
           "value": "1",
           "hint": "SO-3081"
         },
         {
-          "label": "KPI",
+          "label": "Press capacity load",
           "value": "89%",
-          "hint": "Current period"
+          "hint": "This week"
         },
         {
-          "label": "KPI",
-          "value": "−2.4 item pair",
-          "hint": "Current period"
+          "label": "Plan variance",
+          "value": "−2.4k pairs",
+          "hint": "Today"
         }
       ]
     },
     "agent-agri": {
       "name": "Quality Control Agent",
-      "role": "Specialist agent",
+      "role": "Batch testing & release",
       "domain": "Quality",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "summary": "The BATCH-2417 rejection is the third in 30 days and points to a curing-parameter pattern.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Batch rejection rate",
+          "value": "3.1%",
+          "hint": "30 days"
+        },
+        {
+          "label": "Quarantined batches",
           "value": "1",
           "hint": "BATCH-2417"
         },
         {
-          "label": "KPI",
+          "label": "Released today",
           "value": "2",
           "hint": "BATCH-2415 / BATCH-2416"
         },
         {
-          "label": "KPI",
+          "label": "Open corrective actions",
           "value": "1",
           "hint": "QC-0241"
         }
       ]
     },
     "agent-proc": {
-      "name": "Materials Procurement Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "name": "Supply",
+      "role": "Supply & production dependency",
+      "domain": "Supply",
+      "summary": "Two emergency purchases in the last ten days show the reorder point for core materials needs revising.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Open requests",
           "value": "3",
           "hint": "BR-MR-184 / BR-MR-191 / PR-196"
         },
         {
-          "label": "KPI",
+          "label": "Emergency buys in 10 days",
           "value": "2",
-          "hint": "Current period"
+          "hint": "Friction material"
         },
         {
-          "label": "KPI",
+          "label": "Supplier lead time",
           "value": "4 days",
-          "hint": "Current period"
+          "hint": "Kaveh Polymer Chemistry"
         },
         {
-          "label": "KPI",
+          "label": "Price variance",
           "value": "−3%",
-          "hint": "Current period"
+          "hint": "Against the previous quote"
         }
       ]
     },
     "agent-hr": {
       "name": "Maintenance Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "role": "Maintenance & repair",
+      "domain": "Maintenance",
+      "summary": "Press 2 is down and its repair is tied to approval of cost BR-MNT-442.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Open stoppages",
           "value": "1",
-          "hint": "Current period"
+          "hint": "Press 2"
         },
         {
           "label": "MTTR",
           "value": "4.2 hours",
-          "hint": "Current period"
+          "hint": "30-day average"
         },
         {
-          "label": "KPI",
+          "label": "Preventive maintenance done",
           "value": "78%",
-          "hint": "Current period"
+          "hint": "Monthly plan"
         },
         {
-          "label": "KPI",
+          "label": "Open work",
           "value": "2",
           "hint": "work-maint-1 / PR-196"
         }
@@ -609,177 +725,221 @@ export const enContent = {
     },
     "agent-re": {
       "name": "Sales Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "role": "Orders & delivery commitments",
+      "domain": "Sales",
+      "summary": "Fourteen orders are open, and SO-3092 will miss its delivery commitment without a replacement batch.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Open orders",
           "value": "14",
-          "hint": "Current period"
+          "hint": "OEM and aftermarket"
         },
         {
-          "label": "KPI",
+          "label": "On-time delivery",
           "value": "91%",
-          "hint": "Current period"
+          "hint": "30 days"
         },
         {
-          "label": "KPI",
+          "label": "Orders at risk",
           "value": "1",
           "hint": "SO-3092"
         },
         {
-          "label": "KPI",
+          "label": "Shipment today",
           "value": "SH-1207",
-          "hint": "Current period"
+          "hint": "Loading"
         }
       ]
     },
     "agent-corr": {
       "name": "Correspondence Agent",
-      "role": "Specialist agent",
-      "domain": "Operations",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "role": "Correspondence & technical records",
+      "domain": "Correspondence",
+      "summary": "The OEM customer corrective-action letter is still awaiting a reply.",
       "kpis": [
         {
-          "label": "KPI",
+          "label": "Overdue letters",
           "value": "1",
-          "hint": "Current period"
+          "hint": "412/K"
         },
         {
-          "label": "KPI",
+          "label": "Nearest deadline",
           "value": "20 Mordad",
-          "hint": "Current period"
+          "hint": "2 days"
         },
         {
-          "label": "KPI",
+          "label": "Open 8D reports",
           "value": "1",
-          "hint": "Current period"
+          "hint": "Batch BATCH-2417"
         },
         {
-          "label": "KPI",
+          "label": "Documents archived today",
           "value": "4",
-          "hint": "Current period"
+          "hint": "Test certificates"
         }
       ]
     },
     "agent-wh-n": {
-      "name": "",
-      "role": "",
-      "domain": "",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "name": "Warehouse Agent",
+      "role": "Material & product inventory",
+      "domain": "Warehousing",
+      "summary": "Warehouse node on the organisation map, linked to the material and product warehouse.",
       "kpis": []
     },
     "agent-qc-n": {
-      "name": "",
-      "role": "",
-      "domain": "",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "name": "Quality Control Agent",
+      "role": "Batch testing & release",
+      "domain": "Quality",
+      "summary": "Quality node on the organisation map, linked to the quality control unit.",
       "kpis": []
     },
     "agent-fin-n": {
-      "name": "",
-      "role": "",
-      "domain": "",
-      "summary": "Specialist agent monitoring this domain and preparing recommendations.",
+      "name": "Finance Agent",
+      "role": "Finance & costing",
+      "domain": "Finance",
+      "summary": "Finance node on the organisation map, linked to the finance unit.",
       "kpis": []
     }
   },
   "goals": {
     "goal-1": {
-      "title": "Strategic goal",
-      "description": ""
+      "title": "Reach monthly output of 320,000 brake pad pairs",
+      "description": "",
+      "owner": "Production & Pressing Agent",
+      "target": "320,000 pairs"
     },
     "goal-2": {
-      "title": "Strategic goal",
-      "description": ""
+      "title": "Cut press line downtime below 4%",
+      "description": "",
+      "owner": "Maintenance Agent",
+      "target": "No more than 4% downtime",
+      "risk": "BR-MNT-442 is still unapproved and press 2 is down"
     },
     "goal-3": {
-      "title": "Strategic goal",
-      "description": ""
+      "title": "Cut the batch rejection rate below 2%",
+      "description": "",
+      "owner": "Quality Control Agent",
+      "target": "Under 2% rejection",
+      "risk": "Third rejected batch in 30 days"
     },
     "goal-4": {
-      "title": "Strategic goal",
-      "description": ""
+      "title": "Keep on-time order delivery above 95%",
+      "description": "",
+      "owner": "Sales Agent",
+      "target": "95% OTD",
+      "risk": "SO-3092 exposed to delay"
     },
     "goal-5": {
-      "title": "Strategic goal",
-      "description": ""
+      "title": "Stabilise core material supply and end emergency buying",
+      "description": "",
+      "owner": "Procurement Agent",
+      "target": "No more than 2 SKUs below reorder point",
+      "risk": "BR-MR-184 awaiting approval"
     }
   },
-  "initiatives": {},
+  "initiatives": {
+    "init-1": {
+      "title": "Balance batch sequencing against curing-oven capacity"
+    },
+    "init-2": {
+      "title": "Preventive maintenance programme for the presses"
+    },
+    "init-3": {
+      "title": "Stabilise curing parameters and revisit the formulation"
+    },
+    "init-4": {
+      "title": "Align finished-goods allocation with delivery commitments"
+    },
+    "init-5": {
+      "title": "Revise reorder points for friction materials"
+    }
+  },
   "insights": {
     "ins-1": {
-      "title": "Business insight",
-      "summary": "Evidence-backed insight from demo data.",
-      "recommendation": "Review linked records and decide."
+      "title": "Batch rejections trace back to the curing oven temperature profile",
+      "summary": "All three batches rejected in the last 30 days were cured in a window where zone-two oven temperature ran 12 degrees below setpoint.",
+      "recommendation": "Calibrate the zone-two thermocouple and hold release of every batch cured in that window until retest.",
+      "category": "Quality",
+      "impact": "Removes roughly 74 million IRT of scrap per month"
     },
     "ins-2": {
-      "title": "Business insight",
-      "summary": "Evidence-backed insight from demo data.",
-      "recommendation": "Review linked records and decide."
+      "title": "The press 2 stoppage is this week’s delivery bottleneck",
+      "summary": "If the stoppage runs into the night shift, the output shortfall reaches 5.6k pairs and SO-3092 cannot be delivered.",
+      "recommendation": "Approve BR-MNT-442 immediately and move the priority SO-3092 batch to press 1.",
+      "category": "Operations",
+      "impact": "Risk of late-delivery penalties and lost OEM credibility"
     },
     "ins-3": {
-      "title": "Business insight",
-      "summary": "Evidence-backed insight from demo data.",
-      "recommendation": "Review linked records and decide."
+      "title": "Emergency friction-material buying has become a repeating pattern",
+      "summary": "Two emergency purchases in ten days and a 19% rise in freight cost show the reorder point is out of step with real consumption.",
+      "recommendation": "Raise the reorder point to 45 sacks and sign a monthly supply contract with Kaveh Polymer Chemistry.",
+      "category": "Supply risk",
+      "impact": "Lower freight cost and less risk of stopping the mixers"
     },
     "ins-4": {
-      "title": "Business insight",
-      "summary": "Evidence-backed insight from demo data.",
-      "recommendation": "Review linked records and decide."
+      "title": "On-time delivery improves with earlier finished-goods allocation",
+      "summary": "Over the last 30 days, 70% of delays came from allocating finished-goods stock to orders too late, not from a lack of production capacity.",
+      "recommendation": "Allocate stock at order entry and trigger an automatic alert when cover drops below 10 days.",
+      "category": "Sales",
+      "impact": "4-point improvement in the on-time delivery rate"
     }
   },
   "calendarEvents": {
     "cal-1": {
-      "title": "Scheduled event",
-      "type": "item",
+      "title": "Weekly production planning meeting",
+      "type": "Management",
       "date": "Today"
     },
     "cal-2": {
-      "title": "Scheduled event",
+      "title": "Quality committee — review of batch BATCH-2417",
       "type": "Quality",
       "date": "Today"
     },
     "cal-3": {
-      "title": "Scheduled event",
+      "title": "Press 2 repair status review",
       "type": "Maintenance",
       "date": "Today"
     },
     "cal-4": {
-      "title": "Scheduled event",
-      "type": "Send",
+      "title": "Loading of shipment SH-1207",
+      "type": "Shipping",
       "date": "Tomorrow"
     },
     "cal-5": {
-      "title": "Scheduled event",
+      "title": "Reply deadline for letter 412/K",
       "type": "Correspondence",
       "date": "Upcoming"
     },
     "cal-6": {
-      "title": "Scheduled event",
+      "title": "Batch costing review",
       "type": "Finance",
       "date": "Upcoming"
     }
   },
   "activityFeed": {
     "act-1": {
-      "text": "Batch BATCH-2418 entered the curing oven; estimated release on 20 Mordad."
+      "text": "Batch BATCH-2418 entered the curing oven; estimated release on 20 Mordad.",
+      "unit": "Production"
     },
     "act-2": {
-      "text": "A shortage of 640 pairs of FG-8842 was declared for order SO-3092."
+      "text": "A 640-pair shortfall of FG-8842 was reported against order SO-3092.",
+      "unit": "Sales"
     },
     "act-3": {
-      "text": "Loading started for shipment SH-1207 to the aftermarket customer."
+      "text": "Loading of shipment SH-1207 for the aftermarket customer has begun.",
+      "unit": "Finished goods warehouse"
     },
     "act-4": {
-      "text": "BR-MR-184 for friction material was created and sent to the approval queue."
+      "text": "BR-MR-184 for friction material was raised and sent to the approval queue.",
+      "unit": "Procurement"
     },
     "act-5": {
-      "text": "Quarantine certificate QC-0241 was issued for batch BATCH-2417."
+      "text": "Quarantine record QC-0241 was issued for batch BATCH-2417.",
+      "unit": "Quality"
     },
     "act-6": {
-      "text": "A stoppage of hydraulic press 2 was logged due to a leak."
+      "text": "A stoppage on hydraulic press 2 was logged following a leak.",
+      "unit": "Maintenance"
     }
   },
   "visualFeeds": {
@@ -788,15 +948,61 @@ export const enContent = {
       "location": "Production hall"
     },
     "vf-qc": {
-      "title": "Quality inspection bay",
-      "location": "QC"
+      "title": "Quality inspection bench",
+      "location": "QC unit"
     },
     "vf-fg": {
-      "title": "Monitoring view",
-      "location": "Site"
+      "title": "Finished goods warehouse",
+      "location": "FG warehouse"
     }
   },
-  "mapNodes": {}
+  "mapNodes": {
+    "holding": {
+      "label": "AryaTormoz Brake Pad Factory"
+    },
+    "plan": {
+      "label": "Production Planning"
+    },
+    "fuel": {
+      "label": "Production & Pressing"
+    },
+    "agri": {
+      "label": "Quality Control"
+    },
+    "wh": {
+      "label": "Material & Product Warehouse"
+    },
+    "re": {
+      "label": "Sales & Orders"
+    },
+    "proc": {
+      "label": "Material Procurement"
+    },
+    "maint": {
+      "label": "Maintenance"
+    },
+    "fin": {
+      "label": "Finance"
+    },
+    "corr": {
+      "label": "Correspondence & Technical Records"
+    },
+    "agent-wh-n": {
+      "label": "Warehouse Agent"
+    },
+    "agent-qc-n": {
+      "label": "Quality Control Agent"
+    },
+    "agent-fin-n": {
+      "label": "Finance Agent"
+    },
+    "sys-mes": {
+      "label": "Line monitoring and batch recording system"
+    },
+    "sys-qms": {
+      "label": "Laboratory and QC records"
+    }
+  }
 } as const
 
 export type EnContent = typeof enContent
