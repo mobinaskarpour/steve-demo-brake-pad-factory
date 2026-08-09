@@ -1,0 +1,385 @@
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+/* Measured from approved 1430×1100 Steve screenshots */
+@theme {
+  --font-sans: "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
+
+  --color-steve-page: #100f0b;
+  --color-steve-sidebar: #0f0e0c;
+  --color-steve-surface: #191712;
+  --color-steve-elevated: #1c1a15;
+  --color-steve-brief: #061d14;
+  --color-steve-brief-mid: #0c2c22;
+  --color-steve-brief-border: #1a3f32;
+  --color-steve-border: #2a2720;
+  --color-steve-border-soft: #221f19;
+  --color-steve-text: #ddd8ce;
+  --color-steve-text-muted: #a29379;
+  --color-steve-text-faint: #7d7464;
+  --color-steve-gold: #b89556;
+  --color-steve-gold-soft: #c5a059;
+  --color-steve-green: #2f9e6a;
+  --color-steve-green-bright: #3ecf8e;
+  --color-steve-green-lead: #5b7a4d;
+  --color-steve-green-dim: #0f2a1f;
+  --color-steve-green-active: #0e271a;
+  --color-steve-danger: #e25b4a;
+  --color-steve-warning: #d97706;
+  --color-steve-info: #6b8cae;
+
+  --steve-sidebar-width: 196px;
+  --steve-header-pad-y: 14px;
+  --steve-page-pad-x: 36px;
+  --steve-page-pad-y: 12px;
+  --steve-radius-sm: 8px;
+  --steve-radius-md: 12px;
+  --steve-radius-lg: 14px;
+  --steve-radius-pill: 999px;
+  --steve-gap-xs: 6px;
+  --steve-gap-sm: 10px;
+  --steve-gap-md: 16px;
+  --steve-gap-lg: 22px;
+  --steve-ask-max: 980px;
+  --steve-ask-safe: 100px;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-steve-page);
+  color: var(--color-steve-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #35322c; border-radius: 999px; }
+
+.steve-logo {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.38em;
+  color: var(--color-steve-text-muted);
+}
+
+.steve-shell {
+  background: var(--color-steve-page);
+  color: var(--color-steve-text);
+}
+
+.steve-sidebar {
+  width: var(--steve-sidebar-width);
+  background: var(--color-steve-sidebar);
+  border-inline-end: 1px solid #201d18;
+}
+
+.steve-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: var(--steve-radius-pill);
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-steve-text-muted);
+  transition: background 150ms ease, color 150ms ease;
+}
+.steve-nav-item:hover { background: rgba(255,255,255,0.025); color: var(--color-steve-text); }
+.steve-nav-item.is-active {
+  background: var(--color-steve-green-active);
+  color: var(--color-steve-text-muted);
+}
+
+.steve-scope {
+  font-size: 12px;
+  color: var(--color-steve-text-faint);
+}
+
+.steve-greeting {
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: #e8e3d8;
+}
+
+.steve-asof {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-steve-gold);
+}
+
+.steve-brief {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 90% at 85% 20%, rgba(47, 120, 90, 0.18), transparent 55%),
+    linear-gradient(180deg, #0c2c22 0%, #061d14 100%);
+  border: 1px solid var(--color-steve-brief-border);
+  border-radius: var(--steve-radius-lg);
+}
+
+.steve-surface {
+  background: var(--color-steve-surface);
+  border: 1px solid var(--color-steve-border);
+  border-radius: var(--steve-radius-lg);
+}
+
+.steve-live {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #2e2b24;
+  background: #1a1813;
+  border-radius: var(--steve-radius-pill);
+  padding: 9px 16px;
+  font-size: 12px;
+  color: var(--color-steve-text-muted);
+}
+
+.ask-steve-root {
+  /* bottom-anchored Ask Steve shell — never a side drawer */
+}
+@media (min-width: 768px) {
+  .ask-steve-root {
+    padding-inline-start: var(--steve-sidebar-width);
+  }
+}
+
+.ask-steve-shell-open .ask-steve-panel {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+
+.ask-steve-shell-open .ask-steve-dock {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top-color: #2a2720;
+}
+
+.ask-steve-panel {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid #353228;
+  background: rgba(20, 19, 15, 0.985);
+  box-shadow: 0 -16px 56px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px);
+}
+
+.ask-steve-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 12px;
+  border: 1px solid #2e2b24;
+  background: #16140f;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--color-steve-text-muted);
+  transition: border-color 0.15s ease;
+}
+.ask-steve-prompt:hover {
+  border-color: var(--color-steve-brief-border);
+  color: var(--color-steve-text);
+}
+
+.ask-rich-card {
+  border-radius: 14px;
+  border: 1px solid #2e2b24;
+  background: #141310;
+  padding: 14px;
+}
+
+.ask-steve-dock {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  border-radius: var(--steve-radius-pill);
+  border: 1px solid #353228;
+  background: rgba(22, 21, 17, 0.96);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.42);
+  backdrop-filter: blur(10px);
+}
+
+.ask-steve-dock-label {
+  padding: 0 16px;
+  font-size: 13px;
+  color: var(--color-steve-text);
+  white-space: nowrap;
+}
+.ask-steve-dock-divider {
+  width: 1px;
+  height: 16px;
+  background: #3a362c;
+}
+.ask-steve-dock-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 0 14px;
+  font-size: 13px;
+  color: var(--color-steve-text);
+}
+.ask-steve-dock-input::placeholder { color: var(--color-steve-gold); opacity: 0.75; }
+.ask-steve-dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-inline-end: 8px;
+}
+.ask-steve-dock-icon {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--color-steve-text-muted);
+  background: #24221c;
+  border: 1px solid #322f27;
+}
+.ask-steve-dock-icon:hover { background: #2c2922; color: var(--color-steve-text); }
+
+.react-flow__attribution { display: none !important; }
+.react-flow { background: transparent !important; }
+.react-flow__controls {
+  background: var(--color-steve-elevated) !important;
+  border: 1px solid var(--color-steve-border) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  top: 12px !important;
+  bottom: auto !important;
+  left: 12px !important;
+}
+.react-flow__controls-button {
+  background: var(--color-steve-elevated) !important;
+  border-bottom: 1px solid var(--color-steve-border) !important;
+  fill: var(--color-steve-text-muted) !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+.react-flow__minimap { display: none !important; }
+.react-flow__edge-textbg { fill: #100f0b !important; }
+.react-flow__edge-text { fill: #8a7f6c !important; font-size: 10px !important; }
+.react-flow__handle { opacity: 0 !important; width: 1px !important; height: 1px !important; }
+
+.steve-map-node {
+  min-width: 188px;
+  max-width: 240px;
+  border-radius: 10px;
+  border: 1px solid #2e2b24;
+  background: #141310;
+  padding: 12px 14px;
+  box-shadow: none;
+  text-align: right;
+}
+.steve-map-node.is-active {
+  border-color: #3ecf8e;
+  border-width: 1.5px;
+  background: #12251c;
+  box-shadow: 0 0 0 1px rgba(62, 207, 142, 0.22);
+}
+.steve-map-node.is-warning { border-color: #8a5a2b; }
+.steve-map-node.is-danger { border-color: #6b3030; }
+.steve-map-node.is-obligation { border-color: #a86b3a; }
+.steve-map-node.is-goal { border-color: #2f6b4e; background: #102018; }
+.steve-map-node-kicker {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--color-steve-gold);
+  margin-bottom: 4px;
+}
+.steve-map-node-title {
+  font-size: 13px;
+  color: var(--color-steve-text);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.steve-map-node-agent {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-steve-text-muted);
+  line-height: 1.4;
+}
+.steve-map-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-steve-green-bright);
+  flex-shrink: 0;
+}
+.steve-map-node-meta {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--color-steve-text-faint);
+  line-height: 1.45;
+}
+.steve-map-node-status {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--color-steve-green-bright);
+}
+.steve-map-node-alert {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--color-steve-danger);
+}
+
+:root {
+  --color-canvas: var(--color-steve-page);
+  --color-surface: var(--color-steve-surface);
+  --color-elevated: var(--color-steve-elevated);
+  --color-panel: var(--color-steve-surface);
+  --color-ink: var(--color-steve-text);
+  --color-ink-soft: var(--color-steve-text-muted);
+  --color-ink-faint: var(--color-steve-text-faint);
+  --color-line: var(--color-steve-border);
+  --color-line-soft: var(--color-steve-border-soft);
+  --color-green: var(--color-steve-green);
+  --color-green-bright: var(--color-steve-green-bright);
+  --color-green-dim: var(--color-steve-green-dim);
+  --color-green-border: var(--color-steve-brief-border);
+  --color-gold: var(--color-steve-gold);
+  --color-gold-soft: var(--color-steve-gold-soft);
+  --color-danger: var(--color-steve-danger);
+  --color-warning: var(--color-steve-warning);
+  --color-info: var(--color-steve-info);
+  --radius-card: var(--steve-radius-lg);
+  --shadow-ask: 0 8px 28px rgba(0,0,0,0.42);
+}
+.steve-card { background: var(--color-steve-surface); border: 1px solid var(--color-steve-border); border-radius: var(--steve-radius-lg); }
+.steve-card-accent { background: linear-gradient(180deg, rgba(47,158,106,0.12), rgba(18,18,14,0.45)); border: 1px solid var(--color-steve-brief-border); border-radius: var(--steve-radius-lg); }
+
+.steve-page { width: 100%; max-width: none; }
+
+
+/* Direction-aware shell */
+html[dir="ltr"] .steve-sidebar {
+  border-left: 0;
+  border-right: 1px solid #201d18;
+}
+html[dir="rtl"] .steve-sidebar {
+  border-left: 1px solid #201d18;
+  border-right: 0;
+}
+html[dir="ltr"] body {
+  font-family: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
