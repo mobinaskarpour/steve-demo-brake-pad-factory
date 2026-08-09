@@ -105,7 +105,17 @@
     "staff": "Staff",
     "noData": "No data",
     "primaryUnit": "Primary unit",
-    "openId": "Open {{id}}"
+    "openId": "Open {{id}}",
+    "customize": "Customize",
+    "customizeHint": "Choose what you personally want to monitor. Changes stay on this device.",
+    "saveDashboard": "Save dashboard",
+    "dashEmpty": "Your dashboard is empty. Add the widgets you care about.",
+    "dashCameras": "Visual monitoring",
+    "openAgentCameras": "Open Agent cameras",
+    "dashReceivables": "Finance & payments",
+    "dashPeople": "Operators & attendance",
+    "dashInventory": "Material inventory watch",
+    "dashPulse": "Production & press pulse"
   },
   "plan": {
     "title": "Plan",
@@ -144,7 +154,15 @@
     "weekday3": "Tu",
     "weekday4": "We",
     "weekday5": "Th",
-    "weekday6": "Fr"
+    "weekday6": "Fr",
+    "viewDirection": "View direction",
+    "viewDetails": "View details",
+    "directionEvolves": "Direction is versioned and evolves from execution feedback, collected evidence, and alignment reviews — it is not a static slogan.",
+    "progress": "Progress",
+    "legendPrograms": "Programs",
+    "legendMilestones": "Milestones",
+    "legendReviews": "Reviews",
+    "legendCommitments": "Commitments"
   },
   "intelligence": {
     "title": "Intelligence",

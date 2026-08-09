@@ -394,6 +394,29 @@ button, input, textarea, select { font: inherit; color: inherit; }
   color: var(--color-steve-text-muted);
 }
 
+@keyframes steve-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+[dir='rtl'] .steve-live .animate-\[steve-ticker_48s_linear_infinite\] {
+  animation-name: steve-ticker-rtl;
+}
+
+@keyframes steve-ticker-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+
+
 .ask-steve-root {
   /* bottom-anchored Ask Steve shell — never a side drawer */
 }

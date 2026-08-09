@@ -38,25 +38,26 @@ export const enContent = {
     "greeting": "Good morning, Eng. Arya",
     "dateLabel": "Saturday, 8 Aug 2026",
     "paragraphs": [
-      "Key operational signals need executive attention this morning. Open approvals and domain risks are prioritized in Needs You.",
-      "Use Today, Work, Map, and Ask Steve to drive decisions without leaving the command surface."
+      "The line is running one press down: hydraulic press 2 has been stopped since 06:40 for a leak, and its maintenance cost (transaction BR-MNT-442) is queued in finance. The emergency friction-material purchase (request BR-MR-184) is also still waiting for your approval, while phenolic resin SP-1068 has dropped below its reorder point.",
+      "Batch BATCH-2417 failed the friction-coefficient test and was quarantined under certificate QC-0241; with a shortage of 640 pairs of FG-8842, the SO-3092 delivery commitment to Ghate’Gostar Pars cannot be met unless production order PROD-1148 is released. The customer letter 412/K also remains unanswered.",
+      "Before noon, approval of BR-MR-184, disposition of BATCH-2417, and the press 2 restart need to be clear so the 10:00 production planning meeting and the 12:30 quality committee can decide on the real state of the line."
     ],
     "lines": [
       {
         "label": "Since your last review",
-        "text": "Critical alerts and pending approvals remained open."
+        "text": "Batch BATCH-2418 entered the curing oven; BR-MR-184 and BR-MNT-442 remained in the approval queue."
       },
       {
         "label": "Still open",
-        "text": "Approvals, exceptions, and follow-ups listed below."
+        "text": "The BATCH-2417 quarantine, the press 2 stoppage, and the unanswered customer letter."
       },
       {
         "label": "Today's focus",
-        "text": "Clear Needs You items and confirm schedule commitments."
+        "text": "Remove the press 2 blocker and release PROD-1148 before the 10:00 meeting."
       },
       {
         "label": "Prepare now",
-        "text": "Review linked records before the next decision window."
+        "text": "Production planning meeting at 10:00 and quality committee at 12:30."
       }
     ]
   },
@@ -260,22 +261,22 @@ export const enContent = {
   },
   "employees": {
     "emp-mosavi": {
-      "name": "item item",
+      "name": "Ali Mousavi",
       "role": "Operator",
       "shift": ""
     },
     "emp-karimi": {
-      "name": "item item",
+      "name": "Maryam Karimi",
       "role": "Operator",
       "shift": ""
     },
     "emp-nouri": {
-      "name": "item item",
+      "name": "Hossein Nouri",
       "role": "Operator",
       "shift": ""
     },
     "emp-rasouli": {
-      "name": "item item",
+      "name": "Rasouli",
       "role": "Operator",
       "shift": ""
     }
@@ -763,22 +764,22 @@ export const enContent = {
   },
   "activityFeed": {
     "act-1": {
-      "text": "Operational activity update."
+      "text": "Batch BATCH-2418 entered the curing oven; estimated release on 20 Mordad."
     },
     "act-2": {
-      "text": "Operational activity update."
+      "text": "A shortage of 640 pairs of FG-8842 was declared for order SO-3092."
     },
     "act-3": {
-      "text": "Operational activity update."
+      "text": "Loading started for shipment SH-1207 to the aftermarket customer."
     },
     "act-4": {
-      "text": "Operational activity update."
+      "text": "BR-MR-184 for friction material was created and sent to the approval queue."
     },
     "act-5": {
-      "text": "Operational activity update."
+      "text": "Quarantine certificate QC-0241 was issued for batch BATCH-2417."
     },
     "act-6": {
-      "text": "Operational activity update."
+      "text": "A stoppage of hydraulic press 2 was logged due to a leak."
     }
   },
   "visualFeeds": {

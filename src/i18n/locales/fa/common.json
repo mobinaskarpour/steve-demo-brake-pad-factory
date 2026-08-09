@@ -105,7 +105,17 @@
     "staff": "پرسنل",
     "noData": "بدون داده",
     "primaryUnit": "واحد اصلی",
-    "openId": "باز کردن {{id}}"
+    "openId": "باز کردن {{id}}",
+    "customize": "سفارشی‌سازی",
+    "customizeHint": "آنچه شخصاً می‌خواهید پایش کنید را انتخاب کنید. تغییرات روی این دستگاه می‌ماند.",
+    "saveDashboard": "ذخیره داشبورد",
+    "dashEmpty": "داشبورد شما خالی است. ویجت‌های موردنظر را اضافه کنید.",
+    "dashCameras": "پایش تصویری",
+    "openAgentCameras": "دوربین‌های عامل",
+    "dashReceivables": "مالی و پرداخت‌ها",
+    "dashPeople": "اپراتورها و حضور",
+    "dashInventory": "پایش موجودی مواد",
+    "dashPulse": "نبض تولید و پرس"
   },
   "plan": {
     "title": "برنامه",
@@ -144,7 +154,15 @@
     "weekday3": "س",
     "weekday4": "چ",
     "weekday5": "پ",
-    "weekday6": "ج"
+    "weekday6": "ج",
+    "viewDirection": "مشاهده جهت",
+    "viewDetails": "مشاهده جزئیات",
+    "directionEvolves": "جهت نسخه‌دار است و بر اساس بازخورد اجرا، شواهد جمع‌آوری‌شده و بازبینی هم‌راستایی تکامل می‌یابد — شعار ثابت نیست.",
+    "progress": "پیشرفت",
+    "legendPrograms": "برنامه‌ها",
+    "legendMilestones": "نقاط عطف",
+    "legendReviews": "بازبینی‌ها",
+    "legendCommitments": "تعهدات"
   },
   "intelligence": {
     "title": "هوشمندی",
