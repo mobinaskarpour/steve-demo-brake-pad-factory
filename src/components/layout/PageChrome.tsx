@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { cn } from '../../lib/utils'
 
 export function PageHero({
   title,
@@ -20,6 +21,7 @@ export function PageHero({
   )
 }
 
+/** Underline segment control — replaces capsule segmented UI. */
 export function Segmented({
   options,
   value,
@@ -30,17 +32,18 @@ export function Segmented({
   onChange: (id: string) => void
 }) {
   return (
-    <div className="inline-flex rounded-full border border-[var(--color-line)] bg-[var(--color-elevated)] p-1">
+    <div className="steve-underline-tabs flex flex-wrap gap-5 border-b border-[var(--color-line-soft,var(--color-steve-border))]">
       {options.map((o) => (
         <button
           key={o.id}
           type="button"
           onClick={() => onChange(o.id)}
-          className={
+          className={cn(
+            'pb-2 text-[12.5px] transition',
             value === o.id
-              ? 'rounded-full bg-[var(--color-green-dim)] px-3.5 py-1.5 text-[12px] text-[var(--color-green-bright)]'
-              : 'rounded-full px-3.5 py-1.5 text-[12px] text-[var(--color-ink-soft)]'
-          }
+              ? 'border-b-2 border-[var(--color-green-bright,var(--color-steve-green-bright))] text-[var(--color-ink,var(--color-steve-text))]'
+              : 'border-b-2 border-transparent text-[var(--color-ink-faint,var(--color-steve-text-faint))] hover:text-[var(--color-ink-soft,var(--color-steve-text-muted))]',
+          )}
         >
           {o.label}
         </button>
@@ -68,7 +71,7 @@ export function SoftTabs({
           className={
             value === t.id
               ? 'border-b-2 border-[var(--color-green-bright)] pb-2 text-[12.5px] text-[var(--color-ink)]'
-              : 'pb-2 text-[12.5px] text-[var(--color-ink-faint)] hover:text-[var(--color-ink-soft)]'
+              : 'border-b-2 border-transparent pb-2 text-[12.5px] text-[var(--color-ink-faint)] hover:text-[var(--color-ink-soft)]'
           }
         >
           {t.label}

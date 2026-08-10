@@ -28,7 +28,7 @@ import {
 } from '../../domain/askSteveEngine'
 import { useDemo } from '../../domain/store'
 import { getEnConfig } from '../../i18n/enContent'
-import { Ltr, useLocale } from '../../i18n/LocaleProvider'
+import { useLocale } from '../../i18n/LocaleProvider'
 import { cn } from '../../lib/utils'
 import { useAskSteve } from './AskSteveContext'
 
@@ -200,7 +200,7 @@ export function AskSteveRoot() {
                           thread === th.id ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-muted)] hover:bg-[var(--color-steve-elevated)]',
                         )}
                       >
-                        <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', thread === th.id ? 'bg-[var(--color-steve-green-bright)]' : 'bg-[var(--steve-dot-idle)]')} />
+                        <span className={cn('h-1.5 w-1.5 shrink-0 rounded-[8px]', thread === th.id ? 'bg-[var(--color-steve-green-bright)]' : 'bg-[var(--steve-dot-idle)]')} />
                         <span className="truncate">{th.title}</span>
                       </button>
                     ))}
@@ -226,12 +226,6 @@ export function AskSteveRoot() {
                         <div className="truncate text-[12px] text-[var(--color-steve-gold)]">
                           {t('ask.context')}: {context.label}
                           {context.kind ? ` · ${context.kind}` : ''}
-                          {context.recordId ? (
-                            <>
-                              {' · '}
-                              <Ltr>{context.recordId}</Ltr>
-                            </>
-                          ) : null}
                         </div>
                       ) : (
                         <div className="text-[12px] text-[var(--color-steve-text-faint)]">{scopeLabel}</div>
@@ -264,7 +258,7 @@ export function AskSteveRoot() {
                         <div key={m.id} className={m.role === 'user' ? 'flex justify-start' : 'flex justify-end'}>
                           <div className={cn('max-w-[92%] space-y-3', m.role === 'user' ? 'w-auto' : 'w-full')}>
                             {m.role === 'user' ? (
-                              <div className="rounded-2xl rounded-se-md bg-[var(--color-steve-green-dim)] px-3.5 py-2.5 text-[13px] leading-7">{m.text}</div>
+                              <div className="rounded-[10px] rounded-se-md bg-[var(--color-steve-green-dim)] px-3.5 py-2.5 text-[13px] leading-7">{m.text}</div>
                             ) : (
                               <>
                                 <div className="text-[13px] leading-7 text-[var(--color-steve-text-muted)]">{m.text}</div>
@@ -274,13 +268,27 @@ export function AskSteveRoot() {
                                 {m.rich === 'approvals' ? <ApprovalsCard state={state} onAction={runAction} recordPath={recordPath} /> : null}
                                 {m.rich === 'inventory' ? <InventoryCard state={state} onAction={runAction} recordPath={recordPath} /> : null}
                                 {m.actions?.length ? (
-                                  <div className="flex flex-wrap gap-2">
-                                    {m.actions.map((a) => (
-                                      <button key={a.label} type="button" onClick={() => runAction(a)} className="rounded-full border border-[var(--color-steve-brief-border)] px-3 py-1.5 text-[11px] text-[var(--color-steve-green-bright)]">
-                                        {a.label}
-                                      </button>
-                                    ))}
-                                  </div>
+                                  (() => {
+                                      const acts = m.actions
+                                      const approve = acts.find((a) => a.run === 'approve-purchase' || a.run === 'approve-transaction')
+                                      const open = acts.find((a) => a.run === 'open' || a.to)
+                                      const primary = approve || open || acts[0]
+                                      const secondary = acts.find((a) => a !== primary) && (approve ? open : acts.find((a) => a !== primary))
+                                      return (
+                                        <div className="ask-steve-actions">
+                                          {primary ? (
+                                            <button type="button" className="steve-action is-primary" onClick={() => runAction(primary)}>
+                                              {primary.label}
+                                            </button>
+                                          ) : null}
+                                          {secondary && secondary !== primary ? (
+                                            <button type="button" className="steve-action" onClick={() => runAction(secondary)}>
+                                              {secondary.label}
+                                            </button>
+                                          ) : null}
+                                        </div>
+                                      )
+                                    })()
                                 ) : null}
                               </>
                             )}
@@ -292,13 +300,17 @@ export function AskSteveRoot() {
 
                   <div className="border-t border-[var(--color-steve-border)] px-3 py-3">
                     {messages.length > 0 ? (
-                      <div className="mb-1 flex gap-2 overflow-x-auto pb-1">
-                        {prompts.map((p, i) => (
-                          <button key={p} type="button" onClick={() => send(p)} className="ask-steve-prompt shrink-0">
-                            <PromptIcon i={i} />
-                            <span>{p}</span>
-                          </button>
-                        ))}
+                      <div className="ask-steve-followups mb-2">
+                        <div className="ask-steve-followups-label text-[10.5px] uppercase tracking-wide text-[var(--color-steve-text-faint)]">{locale === 'en' ? 'Continue' : 'ادامه'}</div>
+                        <ul className="ask-steve-followups-list">
+                          {prompts.slice(0, 3).map((p) => (
+                            <li key={p}>
+                              <button type="button" onClick={() => send(p)} className="ask-steve-followup-item">
+                                {p}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     ) : (
                       <div className="px-1 text-[11px] text-[var(--color-steve-text-faint)]">{t('ask.useBottom')}</div>
@@ -441,26 +453,38 @@ function ControlRoomCard({
         </svg>
       </div>
       <div className="mt-3 text-[12px] text-[var(--color-steve-warning)]">
-        {topTx ? t('ask.txPending', { id: topTx.id }) : topPr ? t('ask.prOpen', { id: topPr.id }) : t('ask.noOpenApprovals')}
-        {topPr && topTx ? t('ask.alsoQueued', { id: topPr.id }) : ''}
+        {topTx
+          ? t('ask.txPending', { id: loc(topTx.title, 'transactions', topTx.id, 'title') })
+          : topPr
+            ? t('ask.prOpen', { id: loc(topPr.title, 'purchases', topPr.id, 'title') })
+            : t('ask.noOpenApprovals')}
+        {topPr && topTx ? t('ask.alsoQueued', { id: loc(topPr.title, 'purchases', topPr.id, 'title') }) : ''}
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         <button type="button" className="rounded-xl border border-[var(--color-steve-border)] px-3 py-2 text-[12px]" onClick={() => onAction({ label: t('ask.openFullDashboard'), to: '/agents' })}>
           {t('ask.openFullDashboard')}
         </button>
         {topTx ? (
-          <button type="button" className="rounded-xl bg-[var(--color-steve-green)] px-3 py-2 text-[12px] text-white" onClick={() => onAction({ label: t('ask.approveId', { id: topTx.id }), to: recordPath('transaction', topTx.id) })}>
-            {t('today.openId', { id: topTx.id })}
+          <button
+            type="button"
+            className="rounded-xl bg-[var(--color-steve-green)] px-3 py-2 text-[12px] text-white"
+            onClick={() => onAction({ label: t('ask.approveId', { id: loc(topTx.title, 'transactions', topTx.id, 'title') }), to: recordPath('transaction', topTx.id) })}
+          >
+            {t('today.openId', { id: loc(topTx.title, 'transactions', topTx.id, 'title') })}
           </button>
         ) : topPr ? (
-          <button type="button" className="rounded-xl bg-[var(--color-steve-green)] px-3 py-2 text-[12px] text-white" onClick={() => onAction({ label: t('today.openId', { id: topPr.id }), to: recordPath('purchase', topPr.id) })}>
+          <button
+            type="button"
+            className="rounded-xl bg-[var(--color-steve-green)] px-3 py-2 text-[12px] text-white"
+            onClick={() => onAction({ label: t('today.openId', { id: loc(topPr.title, 'purchases', topPr.id, 'title') }), to: recordPath('purchase', topPr.id) })}
+          >
             {t('ask.openRequest')}
           </button>
         ) : null}
       </div>
       <div className="mt-3 flex flex-wrap gap-1.5">
         {[t('ask.confidenceHigh'), ...systems, t('today.workQueue')].map((chip) => (
-          <span key={chip} className="rounded-full border border-[var(--color-steve-border)] px-2 py-0.5 text-[10px] text-[var(--color-steve-text-faint)]">
+          <span key={chip} className="steve-inline-link">
             {chip}
           </span>
         ))}
@@ -478,14 +502,18 @@ function ApprovalsCard({
   onAction: (a: AskAction) => void
   recordPath: (t: string, id: string) => string
 }) {
+  const { loc } = useLocale()
   const pending = state.purchases.filter((p) => p.status === 'pending')
   return (
     <div className="ask-rich-card space-y-2">
       {pending.map((p) => (
-        <button key={p.id} type="button" className="flex w-full items-center justify-between rounded-xl border border-[var(--color-steve-border)] px-3 py-2.5 text-start" onClick={() => onAction({ label: p.id, to: recordPath('purchase', p.id) })}>
-          <span className="text-[13px]">
-            <Ltr>{p.id}</Ltr>
-          </span>
+        <button
+          key={p.id}
+          type="button"
+          className="flex w-full items-center justify-between rounded-xl border border-[var(--color-steve-border)] px-3 py-2.5 text-start"
+          onClick={() => onAction({ label: loc(p.title, 'purchases', p.id, 'title'), to: recordPath('purchase', p.id) })}
+        >
+          <span className="text-[13px]">{loc(p.title, 'purchases', p.id, 'title')}</span>
           <span className="text-[12px] text-[var(--color-steve-gold)]">{p.amountLabel}</span>
         </button>
       ))}
@@ -503,21 +531,23 @@ function InventoryCard({
   recordPath: (t: string, id: string) => string
 }) {
   const { t } = useTranslation()
+  const { loc } = useLocale()
   const inv = state.inventory.find((i) => i.status === 'danger') || state.inventory[0]
   const days = (inv.onHand / Math.max(inv.avgDailyUse, 0.1)).toFixed(1)
+  const invTitle = loc(inv.sku, 'inventory', inv.id, 'sku')
+  const pr = inv.purchaseRequestId ? state.purchases.find((p) => p.id === inv.purchaseRequestId) : undefined
+  const prTitle = pr ? loc(pr.title, 'purchases', pr.id, 'title') : invTitle
   return (
     <div className="ask-rich-card">
-      <div className="text-[13px]">
-        <Ltr>{inv.sku}</Ltr>
-      </div>
+      <div className="text-[13px]">{invTitle}</div>
       <div className="mt-2 grid grid-cols-3 gap-2 text-[11px]">
         <Metric label={t('record.onHand')} value={`${inv.onHand}`} />
         <Metric label={t('ask.dailyUse')} value={`${inv.avgDailyUse}`} />
         <Metric label={t('record.eta')} value={t('ask.daysLeft', { days })} tone="bad" />
       </div>
       {inv.purchaseRequestId ? (
-        <button type="button" className="mt-3 rounded-xl bg-[var(--color-steve-green)] px-3 py-2 text-[12px] text-white" onClick={() => onAction({ label: 'PR', to: recordPath('purchase', inv.purchaseRequestId!) })}>
-          {t('today.openId', { id: inv.purchaseRequestId })}
+        <button type="button" className="mt-3 rounded-xl bg-[var(--color-steve-green)] px-3 py-2 text-[12px] text-white" onClick={() => onAction({ label: prTitle, to: recordPath('purchase', inv.purchaseRequestId!) })}>
+          {t('today.openId', { id: prTitle })}
         </button>
       ) : null}
     </div>

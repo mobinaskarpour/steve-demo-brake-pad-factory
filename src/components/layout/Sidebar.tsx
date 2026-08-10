@@ -62,7 +62,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             onNavigate?.()
           }}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-steve-green-dim)] text-[11px] text-[var(--color-steve-text-muted)]">{locale === 'en' ? appConfig.user.initialsEn || 'AG' : appConfig.user.initials}</div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-steve-green-dim)] text-[11px] text-[var(--color-steve-text-muted)]">{locale === 'en' ? appConfig.user.initialsEn || 'AG' : appConfig.user.initials}</div>
           <div className="min-w-0 flex-1 truncate text-[12px] text-[var(--color-steve-text-muted)]">{brand}</div>
           <ChevronDown size={14} className="text-[var(--color-steve-text-faint)]" />
         </button>

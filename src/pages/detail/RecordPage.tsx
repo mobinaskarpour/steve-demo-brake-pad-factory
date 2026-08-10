@@ -6,7 +6,7 @@ import { Badge } from '../../components/ui/Badge'
 import { ArrowLeft, ArrowRight, CheckCircle2, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
 import { toPersianDigits } from '../../lib/format'
 import { VisualEvidence } from '../../components/ui/VisualMonitoring'
-import { Ltr, useLocale } from '../../i18n/LocaleProvider'
+import { useLocale } from '../../i18n/LocaleProvider'
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -62,9 +62,7 @@ export function RecordPage() {
             {pr ? (
               <Link to={recordPath('purchase', pr.id)} className="steve-brief block p-4 transition hover:brightness-110">
                 <div className="text-[11px] tracking-wide text-[var(--color-steve-text-muted)]">{t('record.relatedPurchase')}</div>
-                <div className="mt-1 text-[15px]">
-                  <Ltr>{pr.id}</Ltr> · {loc(pr.title, 'purchases', pr.id, 'title')}
-                </div>
+                <div className="mt-1 text-[15px]">{loc(pr.title, 'purchases', pr.id, 'title')}</div>
                 <div className="mt-2 text-[12px] text-[var(--color-steve-gold)]">
                   {t('record.amountStatus', { amount: loc(pr.amountLabel, 'purchases', pr.id, 'amountLabel'), status: tStatus(pr.status) })}
                 </div>
@@ -105,7 +103,7 @@ export function RecordPage() {
     const inv = state.inventory.find((x) => x.id === pr.itemId)
     const unit = state.units.find((u) => u.id === pr.unitId)
     return (
-      <Shell title={<Ltr>{pr.id}</Ltr>} subtitle={loc(pr.title, 'purchases', pr.id, 'title')} back="/">
+      <Shell title={loc(pr.title, 'purchases', pr.id, 'title')} subtitle={locale === 'en' ? 'Purchase request' : 'درخواست خرید'} back="/">
         <div className="mb-3 rounded-xl border border-[var(--notice-warning-border)] bg-[var(--notice-warning-bg)] px-3 py-2 text-[12px] text-[var(--color-steve-gold-soft)]">{t('record.purchaseDemoNote')}</div>
         <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
           <section className="steve-surface p-5">
@@ -135,8 +133,7 @@ export function RecordPage() {
               </Link>
             ) : null}
             <Link to={`/work/${pr.workId}`} className="steve-surface flex items-center gap-1 p-4 text-[13px]">
-              {t('record.workLink', { id: '' })}
-              <Ltr>{pr.workId}</Ltr> <Chevron size={14} />
+              {t('record.openRelatedWork')} <Chevron size={14} />
             </Link>
             {pr.conversationId ? (
               <Link to={`/communication?thread=${pr.conversationId}`} className="steve-surface flex items-center gap-1 p-4 text-[13px]">
@@ -172,7 +169,7 @@ export function RecordPage() {
     const tx = state.transactions.find((x) => x.id === id)
     if (!tx) return <Missing />
     return (
-      <Shell title={<Ltr>{tx.id}</Ltr>} subtitle={loc(tx.title, 'transactions', tx.id, 'title')} back="/agents">
+      <Shell title={loc(tx.title, 'transactions', tx.id, 'title')} subtitle={locale === 'en' ? 'Transaction' : 'تراکنش'} back="/agents">
         <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
           <section className="steve-surface p-5">
             <Row label={t('record.amount')} value={loc(tx.amountLabel, 'transactions', tx.id, 'amountLabel')} />

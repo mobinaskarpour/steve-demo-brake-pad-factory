@@ -186,7 +186,7 @@ export function TodayPage() {
   return (
     <div className="steve-page space-y-4">
       {state.toast ? (
-        <div className="fixed top-4 left-1/2 z-[80] -translate-x-1/2 rounded-full border border-[var(--color-steve-brief-border)] bg-[var(--color-steve-green-dim)] px-4 py-2 text-[12px] text-[var(--color-steve-green-bright)] shadow-lg">
+        <div className="fixed top-4 left-1/2 z-[80] -translate-x-1/2 rounded-[8px] border border-[var(--color-steve-brief-border)] bg-[var(--color-steve-green-dim)] px-4 py-2 text-[12px] text-[var(--color-steve-green-bright)] shadow-lg">
           {tToast(state.toast)}
         </div>
       ) : null}
@@ -198,7 +198,7 @@ export function TodayPage() {
           {brief.dateLabel} • {t('today.asOf')}
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex gap-1 rounded-full border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] p-1">
+          <div className="steve-underline-tabs flex flex-wrap gap-5 border-b border-[var(--color-steve-border)]">
             {(
               [
                 ['brief', 'nav.today'],
@@ -209,10 +209,7 @@ export function TodayPage() {
                 key={id}
                 type="button"
                 onClick={() => setView(id)}
-                className={cn(
-                  'rounded-full px-3.5 py-1.5 text-[12px]',
-                  view === id ? 'bg-[var(--color-steve-green-active)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]',
-                )}
+                className={cn('pb-2 text-[12px]', view === id ? 'border-b-2 border-[var(--color-steve-green-bright)] text-[var(--color-steve-text)]' : 'border-b-2 border-transparent text-[var(--color-steve-text-faint)]')}
               >
                 {t(labelKey)}
               </button>
@@ -221,7 +218,7 @@ export function TodayPage() {
           {view === 'dashboard' ? (
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--color-steve-border)] px-3.5 py-1.5 text-[12px] text-[var(--color-steve-text-muted)]"
+              className="inline-flex items-center gap-2 rounded-md border border-[var(--color-steve-border)] px-3.5 py-1.5 text-[12px] text-[var(--color-steve-text-muted)]"
               onClick={() => setCustomizeOpen(true)}
             >
               <Settings2 size={14} strokeWidth={1.6} />
@@ -289,7 +286,7 @@ export function TodayPage() {
           {/* Live = happening-now activity stream — not a task list */}
           <div className="steve-live">
             <span className="inline-flex items-center gap-1.5 font-medium text-[var(--color-steve-green-bright)]">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-steve-green-bright)]" />
+              <span className="h-1.5 w-1.5 animate-pulse rounded-[8px] bg-[var(--color-steve-green-bright)]" />
               {t('today.live')}
             </span>
             <div className="min-w-0 flex-1 overflow-hidden">
@@ -332,7 +329,7 @@ export function TodayPage() {
                     >
                       <div
                         className={cn(
-                          'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
+                          'flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px]',
                           item.priority === 'critical'
                             ? 'bg-[var(--steve-danger-tint)] text-[var(--color-steve-danger)]'
                             : 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-green-bright)]',
@@ -342,10 +339,7 @@ export function TodayPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-[var(--steve-chip-bg)] px-2 py-0.5 text-[11px] text-[var(--color-steve-gold)]">
-                            {loc(item.type, 'alerts', item.id, 'type')}
-                          </span>
-                          <span className="text-[13px] text-[var(--color-steve-text)]">{loc(item.title, 'alerts', item.id, 'title')}</span>
+                          <span className="me-2 text-[10.5px] text-[var(--color-steve-text-faint)]">{loc(item.type, 'alerts', item.id, 'type')}</span><span className="text-[13px] text-[var(--color-steve-text)]">{loc(item.title, 'alerts', item.id, 'title')}</span>
                         </div>
                         <div className="mt-1 text-[11px] text-[var(--color-steve-gold)]">{t('time.actionBy', { time: item.time })}</div>
                       </div>
@@ -387,7 +381,7 @@ export function TodayPage() {
                             className="relative flex w-full gap-3 pe-2 text-start"
                             onClick={() => navigate(e.workId ? `/work/${e.workId}` : '/plan')}
                           >
-                            <div className="relative z-10 mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-steve-green-bright)]" />
+                            <div className="relative z-10 mt-1.5 h-2.5 w-2.5 shrink-0 rounded-[8px] bg-[var(--color-steve-green-bright)]" />
                             <div>
                               <div className="text-[12px] text-[var(--color-steve-gold)]" dir="ltr">
                                 {e.time}
@@ -403,7 +397,7 @@ export function TodayPage() {
               </div>
               <button
                 type="button"
-                className="mt-5 rounded-full border border-[var(--color-steve-gold)] px-3 py-1.5 text-[11px] text-[var(--color-steve-gold)]"
+                className="mt-5 rounded-md border border-[var(--color-steve-gold)] px-3 py-1.5 text-[11px] text-[var(--color-steve-gold)]"
                 onClick={() => navigate('/plan')}
               >
                 {t('actions.prepWindow')}
@@ -473,7 +467,7 @@ function MyDashboard({
     return (
       <div className="steve-surface flex flex-col items-center gap-3 px-6 py-16 text-center">
         <p className="text-[14px] text-[var(--color-steve-text-muted)]">{t('today.dashEmpty')}</p>
-        <button type="button" className="inline-flex items-center gap-2 rounded-full border border-[var(--color-steve-green-bright)] px-4 py-2 text-[12px] text-[var(--color-steve-green-bright)]" onClick={onOpenCustomize}>
+        <button type="button" className="inline-flex items-center gap-2 rounded-md border border-[var(--color-steve-green-bright)] px-4 py-2 text-[12px] text-[var(--color-steve-green-bright)]" onClick={onOpenCustomize}>
           <Plus size={14} /> {t('today.customize')}
         </button>
       </div>
@@ -641,12 +635,12 @@ function CustomizeModal({
           })}
         </div>
         <div className="mt-5 flex justify-end gap-2">
-          <button type="button" className="rounded-full border border-[var(--color-steve-border)] px-4 py-2 text-[12px]" onClick={onClose}>
+          <button type="button" className="rounded-md border border-[var(--color-steve-border)] px-4 py-2 text-[12px]" onClick={onClose}>
             {t('actions.cancel')}
           </button>
           <button
             type="button"
-            className="rounded-full bg-[var(--color-steve-green)] px-4 py-2 text-[12px] text-white"
+            className="rounded-[8px] bg-[var(--color-steve-green)] px-4 py-2 text-[12px] text-white"
             onClick={() => {
               onChange(draft)
               onClose()

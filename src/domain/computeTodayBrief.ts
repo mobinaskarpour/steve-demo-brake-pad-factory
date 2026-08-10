@@ -1,4 +1,5 @@
 import type { DemoState } from './types'
+import { buildIdTitleMap, scrubVisibleIds } from './displayRecord'
 
 type BriefLine = { label: string; text: string }
 type Brief = {
@@ -141,15 +142,18 @@ export function computeTodayBrief(state: DemoState, locale: 'fa' | 'en', staticE
       ? 'No primary purchase or payment approvals remain open.'
       : 'تایید اصلی خرید یا پرداختی باز نمانده است.'
 
+  const idMap = buildIdTitleMap(state, locale)
+  const scrub = (text: string) => scrubVisibleIds(text, idMap)
+
   return {
     greeting: base.greeting,
     dateLabel: base.dateLabel,
-    paragraphs,
+    paragraphs: paragraphs.map(scrub),
     lines: [
-      { label: labels.since, text: sinceText },
-      { label: labels.open, text: stillOpen },
-      { label: labels.focus, text: focusLine?.text || base.lines[2]?.text || '' },
-      { label: labels.prep, text: prepLine?.text || base.lines[3]?.text || '' },
+      { label: labels.since, text: scrub(sinceText) },
+      { label: labels.open, text: scrub(stillOpen) },
+      { label: labels.focus, text: scrub(focusLine?.text || base.lines[2]?.text || '') },
+      { label: labels.prep, text: scrub(prepLine?.text || base.lines[3]?.text || '') },
     ],
   }
 }

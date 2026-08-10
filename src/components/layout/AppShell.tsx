@@ -116,7 +116,7 @@ function ShellInner() {
                   setScopeOpen(false)
                 }}
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-steve-green-dim)] text-[11px] text-[var(--color-steve-text-muted)]">{locale === 'en' ? appConfig.user.initialsEn || 'AG' : appConfig.user.initials}</div>
+                <div className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--color-steve-green-dim)] text-[11px] text-[var(--color-steve-text-muted)]">{locale === 'en' ? appConfig.user.initialsEn || 'AG' : appConfig.user.initials}</div>
                 <ChevronDown size={12} className="text-[var(--color-steve-text-faint)]" />
               </button>
               {userOpen ? (
@@ -161,7 +161,7 @@ function ShellInner() {
       </div>
 
       {state.toast ? (
-        <div className="pointer-events-none fixed bottom-[calc(var(--steve-ask-safe,108px)+8px)] left-1/2 z-[70] -translate-x-1/2 rounded-full border border-[var(--color-steve-brief-border)] bg-[var(--color-steve-elevated)] px-4 py-2 text-[12px] text-[var(--color-steve-text)] shadow-lg">
+        <div className="pointer-events-none fixed bottom-[calc(var(--steve-ask-safe,108px)+8px)] left-1/2 z-[70] -translate-x-1/2 rounded-md border border-[var(--color-steve-brief-border)] bg-[var(--color-steve-elevated)] px-4 py-2 text-[12px] text-[var(--color-steve-text)] shadow-lg">
           {tToast(state.toast)}
         </div>
       ) : null}

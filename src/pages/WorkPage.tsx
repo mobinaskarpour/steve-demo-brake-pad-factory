@@ -9,8 +9,9 @@ import { priorityTone } from '../lib/labels'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { toPersianDigits } from '../lib/format'
-import { Ltr, useLocale } from '../i18n/LocaleProvider'
+import { useLocale } from '../i18n/LocaleProvider'
 import { getEnConfig } from '../i18n/enContent'
+import { buildIdTitleMap } from '../domain/displayRecord'
 
 const STAGES_FA = ['پیشنهاد', 'آماده‌سازی', 'مجاز', 'در حال اجرا', 'مشاهده', 'تایید شده', 'نتیجه', 'یادگیری', 'بسته'] as const
 
@@ -55,12 +56,12 @@ export function WorkPage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={t('work.search')}
-              className="h-9 rounded-full border border-[var(--color-line)] bg-[var(--color-elevated)] px-3 text-[12px]"
+              className="h-9 rounded-[8px] border border-[var(--color-line)] bg-[var(--color-elevated)] px-3 text-[12px]"
             />
             <select
               value={queryUnit}
               onChange={(e) => setQueryUnit(e.target.value)}
-              className="h-9 rounded-full border border-[var(--color-line)] bg-[var(--color-elevated)] px-3 text-[12px]"
+              className="h-9 rounded-[8px] border border-[var(--color-line)] bg-[var(--color-elevated)] px-3 text-[12px]"
             >
               <option value="all">{t('work.all')}</option>
               {unitOptions.map((u) => (
@@ -71,7 +72,7 @@ export function WorkPage() {
             </select>
             <button
               type="button"
-              className="rounded-full bg-[var(--color-green)] px-3.5 py-2 text-[12px] text-white"
+              className="rounded-[8px] bg-[var(--color-green)] px-3.5 py-2 text-[12px] text-white"
               onClick={() => {
                 dispatch({
                   type: 'CREATE_FOLLOWUP',
@@ -141,7 +142,7 @@ export function WorkPage() {
                   const current = STAGES_FA.indexOf(selected.stage as (typeof STAGES_FA)[number])
                   return (
                     <div key={s} className="flex items-center gap-2">
-                      <div className={cn('rounded-full px-2.5 py-1 text-[10px]', idx <= current ? 'bg-[var(--color-green-dim)] text-[var(--color-green-bright)]' : 'bg-[var(--color-elevated)] text-[var(--color-ink-faint)]')}>
+                      <div className={cn('rounded-md px-2.5 py-1 text-[10px]', idx <= current ? 'bg-[var(--color-green-dim)] text-[var(--color-green-bright)]' : 'bg-[var(--color-elevated)] text-[var(--color-ink-faint)]')}>
                         {tStage(s)}
                       </div>
                       {idx < STAGES_FA.length - 1 ? <div className="h-px w-3 bg-[var(--color-line)]" /> : null}
@@ -178,14 +179,20 @@ export function WorkPage() {
               <div className="flex justify-between gap-3 border-b border-[var(--color-line-soft)] py-2">
                 <span className="text-[var(--color-ink-faint)]">{t('work.links')}</span>
                 <span className="text-end text-[12px]">
-                  {selected.linked.length
-                    ? selected.linked.map((x, i) => (
-                        <span key={x}>
-                          {i > 0 ? ' · ' : ''}
-                          <Ltr>{x}</Ltr>
-                        </span>
-                      ))
-                    : '—'}
+                  {(() => {
+                    const idMap = buildIdTitleMap(state, locale === 'en' ? 'en' : 'fa', loc)
+                    const labels = selected.linked
+                      .map((x) => idMap.get(x))
+                      .filter((label): label is string => Boolean(label))
+                    return labels.length
+                      ? labels.map((label, i) => (
+                          <span key={`${label}-${i}`}>
+                            {i > 0 ? ' · ' : ''}
+                            {label}
+                          </span>
+                        ))
+                      : '—'
+                  })()}
                 </span>
               </div>
             </div>
@@ -224,11 +231,11 @@ export function WorkDetailPage() {
         <div className="mt-4 flex flex-wrap gap-2">
           <Badge tone={priorityTone[item.priority]}>{tStage(item.stage)}</Badge>
           <Badge>{tPriority(item.priority)}</Badge>
-          <button type="button" className="rounded-full bg-[var(--color-green)] px-3 py-1.5 text-[12px] text-white" onClick={() => dispatch({ type: 'ADVANCE_WORK', id: item.id })}>
+          <button type="button" className="rounded-[8px] bg-[var(--color-green)] px-3 py-1.5 text-[12px] text-white" onClick={() => dispatch({ type: 'ADVANCE_WORK', id: item.id })}>
             {t('work.advanceStage')}
           </button>
           {item.recordType && item.recordId ? (
-            <Link to={recordPath(item.recordType, item.recordId)} className="rounded-full border border-[var(--color-line)] px-3 py-1.5 text-[12px]">
+            <Link to={recordPath(item.recordType, item.recordId)} className="steve-action">
               {t('work.relatedRecord')}
             </Link>
           ) : null}

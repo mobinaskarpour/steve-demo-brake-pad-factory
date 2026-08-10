@@ -572,7 +572,7 @@ function SystemsView({
         </div>
         <button
           type="button"
-          className="rounded-full border border-[var(--color-steve-brief-border)] px-3 py-1.5 text-[12px] text-[var(--color-steve-green-bright)]"
+          className="steve-action is-primary"
           onClick={() => {
             dispatch({
               type: 'CREATE_FOLLOWUP',
@@ -599,7 +599,7 @@ function SystemsView({
             key={f}
             type="button"
             onClick={() => setFilter(f)}
-            className={cn('rounded-full px-3 py-1.5 text-[12px]', filter === f ? 'bg-[var(--color-steve-green-active)] text-[var(--color-steve-text)]' : 'border border-[var(--color-steve-border)] text-[var(--color-steve-text-faint)]')}
+            className={cn('rounded-md px-3 py-1.5 text-[12px]', filter === f ? 'bg-[var(--color-steve-green-active)] text-[var(--color-steve-text)]' : 'border border-[var(--color-steve-border)] text-[var(--color-steve-text-faint)]')}
           >
             {f === 'all' ? t('map.all') : f === 'active' ? t('status.active') : f === 'attention' ? t('status.attention') : t('map.paused')}
           </button>
@@ -699,15 +699,15 @@ function AuthorityView({
               <div className="text-[16px]">{t('map.authority')}</div>
               <div className="mt-1 text-[12px] text-[var(--color-steve-text-faint)]">{t('map.authorityStats')}</div>
             </div>
-            <button type="button" className="rounded-full border border-[var(--color-steve-border)] px-3 py-1.5 text-[12px]" onClick={() => navigate('/map?tab=authority&mode=design')}>
+            <button type="button" className="steve-action" onClick={() => navigate('/map?tab=authority&mode=design')}>
               {t('map.manageDesign')}
             </button>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" onClick={() => setFilter('ops')} className={cn('rounded-full px-3 py-1.5 text-[12px]', filter === 'ops' ? 'bg-[var(--color-steve-green-active)]' : 'border border-[var(--color-steve-border)]')}>
+            <button type="button" onClick={() => setFilter('ops')} className={cn('rounded-md px-3 py-1.5 text-[12px]', filter === 'ops' ? 'bg-[var(--color-steve-green-active)]' : 'border border-[var(--color-steve-border)]')}>
               {t('map.opsDelegation')}
             </button>
-            <button type="button" onClick={() => setFilter('strategic')} className={cn('rounded-full px-3 py-1.5 text-[12px]', filter === 'strategic' ? 'bg-[var(--color-steve-green-active)]' : 'border border-[var(--color-steve-border)]')}>
+            <button type="button" onClick={() => setFilter('strategic')} className={cn('rounded-md px-3 py-1.5 text-[12px]', filter === 'strategic' ? 'bg-[var(--color-steve-green-active)]' : 'border border-[var(--color-steve-border)]')}>
               {t('map.strategicMission')}
             </button>
             <div className="min-w-[200px] flex-1">

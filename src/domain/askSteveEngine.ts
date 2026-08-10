@@ -7,6 +7,7 @@
  */
 import { productionStageLabel, qcStatusLabel, settlementLabel } from './agentDashboards'
 import type { AlertItem, DemoState, Priority } from './types'
+import { buildIdTitleMap, scrubVisibleIds } from './displayRecord'
 
 export type AskTurn = { role: 'user' | 'steve'; text: string }
 
@@ -540,11 +541,34 @@ function plural(e: Engine, count: number, faText: string, singular: string, plur
   return e.fa ? faText : count === 1 ? singular : pluralText
 }
 
+function openActionLabel(e: Engine, kind: AskRecord['kind']): string {
+  switch (kind) {
+    case 'purchase':
+      return e.s('مشاهده درخواست', 'View request')
+    case 'transaction':
+      return e.s('مشاهده پرداخت', 'View payment')
+    case 'correspondence':
+      return e.s('مشاهده مکاتبه', 'View correspondence')
+    case 'inventory':
+      return e.s('مشاهده موجودی', 'View inventory')
+    case 'work':
+      return e.s('مشاهده کار', 'View work')
+    case 'employee':
+      return e.s('مشاهده پرونده', 'View record')
+    case 'alert':
+      return e.s('مشاهده مورد', 'View item')
+    case 'agent':
+      return e.s('مشاهده عامل', 'View agent')
+    case 'unit':
+      return e.s('مشاهده واحد', 'View unit')
+    default:
+      return e.s('مشاهده جزئیات', 'View details')
+  }
+}
+
 function openAction(e: Engine, record: AskRecord): AskAction {
-  // Business IDs (PR-184) read well in a button; internal slugs (inv-oil-10w40) do not.
-  const display = /^[A-Z]/.test(record.id) ? record.id : record.label || record.id
   return {
-    label: e.input.t('today.openId', { id: display.length > 28 ? `${display.slice(0, 26)}…` : display }),
+    label: openActionLabel(e, record.kind),
     to: recordRoute(record.kind, record.id),
     run: 'open',
   }
@@ -552,12 +576,13 @@ function openAction(e: Engine, record: AskRecord): AskAction {
 
 function approveAction(e: Engine, kind: 'purchase' | 'transaction', id: string): AskAction {
   return {
-    label: `${e.input.t('actions.approve')} ${id}`,
+    label: kind === 'purchase' ? e.s('تأیید درخواست', 'Approve request') : e.s('تأیید پرداخت', 'Approve payment'),
     run: kind === 'purchase' ? 'approve-purchase' : 'approve-transaction',
     payload: { id },
     to: recordRoute(kind, id),
   }
 }
+
 
 function followUpAction(e: Engine, record: AskRecord | null): AskAction {
   return {
@@ -2002,12 +2027,31 @@ function answerForIntent(e: Engine, intent: Intent, focus: AskRecord | null): Ex
   }
 }
 
+function scrubAskReply(reply: AskReply, input: AskInput): AskReply {
+  const map = buildIdTitleMap(input.state, input.locale, input.loc)
+  const scrub = (text: string) => scrubVisibleIds(text, map)
+  return {
+    ...reply,
+    text: scrub(reply.text),
+    actions: reply.actions?.map((a) => ({ ...a, label: scrub(a.label) })),
+    focus: reply.focus
+      ? {
+          ...reply.focus,
+          label: scrub(reply.focus.label) || (input.locale === 'en' ? 'Business record' : 'رکورد کسب‌وکار'),
+        }
+      : reply.focus,
+  }
+}
+
 export function resolveAskSteve(input: AskInput): AskReply {
   const e = buildEngine(input)
 
   if (!input.question.trim()) {
     const fallback = answerAttention(e)
-    return { text: fallback.text, actions: fallback.actions, rich: fallback.rich, focus: fallback.focus }
+    return scrubAskReply(
+      { text: fallback.text, actions: fallback.actions, rich: fallback.rich, focus: fallback.focus },
+      input,
+    )
   }
 
   const mentioned = recordsMentionedIn(e, input.question)
@@ -2030,7 +2074,7 @@ export function resolveAskSteve(input: AskInput): AskReply {
 
   if (mentioned.length > 1 && SINGLE_FOCUS_INTENTS.includes(intent)) {
     const reply = answerAmbiguous(e, mentioned)
-    return { text: reply.text, actions: reply.actions, focus: null }
+    return scrubAskReply({ text: reply.text, actions: reply.actions, focus: null }, input)
   }
 
   // A bare "explain" with nothing to explain becomes the page's natural question.
@@ -2038,12 +2082,15 @@ export function resolveAskSteve(input: AskInput): AskReply {
 
   const result = answerForIntent(e, intent, focus)
 
-  return {
-    text: result.text,
-    actions: result.actions.length ? result.actions : undefined,
-    rich: result.rich,
-    focus: result.focus ?? (focus ? focusOf(focus) : null),
-  }
+  return scrubAskReply(
+    {
+      text: result.text,
+      actions: result.actions.length ? result.actions : undefined,
+      rich: result.rich,
+      focus: result.focus ?? (focus ? focusOf(focus) : null),
+    },
+    input,
+  )
 }
 
 /* ------------------------------------------------------------------ */
@@ -2064,23 +2111,27 @@ export function askSteveDefaultPrompts(args: {
   const recordMatch = pathname.match(/^\/records\/[^/]+\/([^/?#]+)/)
   const workMatch = pathname.match(/^\/work\/([^/?#]+)/)
   const focusId = recordMatch?.[1] || workMatch?.[1] || context?.recordId
+  const idMap = buildIdTitleMap(state, locale)
+  const titleOf = (id: string) => idMap.get(id) || (fa ? 'این مورد' : 'this item')
 
   if (focusId) {
+    const title = titleOf(focusId)
     return [
-      s(`چرا ${focusId} بلاک شده؟`, `Why is ${focusId} blocked?`),
-      s(`مرحله بعدی ${focusId} چیست؟`, `What is the next step on ${focusId}?`),
-      s(`اگر ${focusId} رد شود چه می‌شود؟`, `What happens if ${focusId} is rejected?`),
-      s(`${focusId} به چه چیزی وصل است؟`, `What is ${focusId} linked to?`),
+      s(`چرا ${title} بلاک شده؟`, `Why is ${title} blocked?`),
+      s(`مرحله بعدی ${title} چیست؟`, `What is the next step on ${title}?`),
+      s(`اگر ${title} رد شود چه می‌شود؟`, `What happens if ${title} is rejected?`),
+      s(`${title} به چه چیزی وصل است؟`, `What is ${title} linked to?`),
     ]
   }
 
   if (pathname.startsWith('/plan')) {
     const risky = state.goals.find((g) => g.risk)
+    const riskyTitle = risky ? titleOf(risky.id) : ''
     return [
       s('کدام تعهد در خطر است؟', 'Which commitment is at risk?'),
       s('جهت کسب‌وکار الان چیست؟', 'What is our direction right now?'),
       risky
-        ? s(`چرا هدف ${risky.id} عقب افتاده؟`, `Why is goal ${risky.id} behind?`)
+        ? s(`چرا هدف «${riskyTitle}» عقب افتاده؟`, `Why is goal “${riskyTitle}” behind?`)
         : s('کدام هدف کمترین پیشرفت را دارد؟', 'Which goal has the least progress?'),
       s('چه چیزی جلوی اهداف این ماه را گرفته؟', 'What is blocking this month’s goals?'),
     ]
@@ -2137,7 +2188,7 @@ export function askSteveDefaultPrompts(args: {
     s('امروز چه چیزی نیاز به توجه من دارد؟', 'What needs my attention today?'),
     s('از آخرین بازبینی چه تغییری کرده؟', 'What changed since my last review?'),
     pending
-      ? s(`چرا ${pending.id} هنوز باز است؟`, `Why is ${pending.id} still open?`)
+      ? s(`چرا ${titleOf(pending.id)} هنوز باز است؟`, `Why is ${titleOf(pending.id)} still open?`)
       : s('چه تصمیمی منتظر من است؟', 'Which decision is waiting on me?'),
     topAlert
       ? s('سه اقدام پیشنهادی امروز چیست؟', 'What are the three best actions right now?')

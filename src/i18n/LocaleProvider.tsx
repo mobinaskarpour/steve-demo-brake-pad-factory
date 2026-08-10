@@ -5,6 +5,7 @@ import i18n, { applyDocumentLocale, LOCALE_KEY, readStoredLocale, type AppLocale
 import { applyDocumentTheme, readStoredTheme, storeTheme, type AppTheme } from '../theme/theme'
 import { getEnField } from './enContent'
 import { ensureEnglish } from './ensureEnglish'
+import { scrubVisibleIds, buildStaticIdTitleMap } from '../domain/displayRecord'
 
 type LocaleCtx = {
   locale: AppLocale
@@ -123,26 +124,30 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     applyDocumentTheme(theme)
   }, [theme])
 
+  const idTitleMap = useMemo(() => buildStaticIdTitleMap(locale === 'en' ? 'en' : 'fa'), [locale])
+
+  const scrub = useCallback((text: string) => scrubVisibleIds(text, idTitleMap), [idTitleMap])
+
   const loc = useCallback(
     (fa: string | undefined | null, collection: string, id: string, field: string) => {
       const fallback = fa ?? ''
-      if (locale === 'fa') return fallback
+      if (locale === 'fa') return scrub(fallback)
       const en = getEnField(collection, id, field, fallback)
-      return ensureEnglish(en)
+      return scrub(ensureEnglish(en))
     },
-    [locale],
+    [locale, scrub],
   )
 
   const tToast = useCallback(
     (fa: string | undefined | null) => {
       if (!fa) return ''
-      if (locale === 'fa') return fa
+      if (locale === 'fa') return scrub(fa)
       const exact: Record<string, string> = {
         'هشدار تایید مشاهده شد.': 'Alert acknowledged.',
         'هشدار بسته شد.': 'Alert closed.',
         'پیام ارسال شد.': 'Message sent.',
       }
-      if (exact[fa]) return exact[fa]
+      if (exact[fa]) return scrub(exact[fa])
       let out = fa
       out = out.replace(/درخواست (.+) تایید شد\./, 'Request $1 approved.')
       out = out.replace(/تراکنش (.+) تایید شد\./, 'Transaction $1 approved.')
@@ -150,9 +155,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       out = out.replace(/تایید (.+)/, 'Approved $1')
       out = out.replace(/وضعیت (.+) به «تایید شده» تغییر کرد\./, 'Status of $1 changed to Approved.')
       out = out.replace(/(.+) تایید شد\./, '$1 approved.')
-      return ensureEnglish(out)
+      return scrub(ensureEnglish(out))
     },
-    [locale],
+    [locale, scrub],
   )
 
   const tStatus = useCallback(
@@ -205,7 +210,7 @@ export function useLocale() {
 }
 
 const switchGroupClass =
-  'inline-flex items-center rounded-full border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] p-0.5 text-[11px]'
+  'inline-flex items-center gap-0 border-b border-[var(--color-steve-border)] text-[11px]'
 
 export function LanguageSwitcher({ className = '' }: { className?: string }) {
   const { locale, setLocale } = useLocale()
@@ -216,7 +221,7 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
         aria-label="Switch language to Persian"
         aria-pressed={locale === 'fa'}
         data-locale-option="fa"
-        className={`rounded-full px-2.5 py-1 transition ${locale === 'fa' ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
+        className={`px-2.5 py-1 transition ${locale === 'fa' ? 'border-b-2 border-[var(--color-steve-green-bright)] text-[var(--color-steve-text)]' : 'border-b-2 border-transparent text-[var(--color-steve-text-faint)]'}`}
         onClick={() => setLocale('fa')}
       >
         FA
@@ -226,7 +231,7 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
         aria-label="Switch language to English"
         aria-pressed={locale === 'en'}
         data-locale-option="en"
-        className={`rounded-full px-2.5 py-1 transition ${locale === 'en' ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
+        className={`px-2.5 py-1 transition ${locale === 'en' ? 'border-b-2 border-[var(--color-steve-green-bright)] text-[var(--color-steve-text)]' : 'border-b-2 border-transparent text-[var(--color-steve-text-faint)]'}`}
         onClick={() => setLocale('en')}
       >
         EN
@@ -243,7 +248,7 @@ export function ThemeSwitcher({ className = '' }: { className?: string }) {
     { value: 'dark' as const, Icon: Moon, label: t('shell.dark') },
   ]
   return (
-    <div className={`${switchGroupClass} ${className}`} role="group" aria-label={t('shell.theme')}>
+    <div className={`inline-flex items-center gap-0.5 ${className}`} role="group" aria-label={t('shell.theme')}>
       {options.map(({ value, Icon, label }) => (
         <button
           key={value}
@@ -252,7 +257,7 @@ export function ThemeSwitcher({ className = '' }: { className?: string }) {
           aria-pressed={theme === value}
           title={label}
           data-theme-option={value}
-          className={`inline-flex items-center justify-center rounded-full px-2.5 py-1 transition ${theme === value ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)]'}`}
+          className={`inline-flex h-7 w-7 items-center justify-center rounded-[6px] transition ${theme === value ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-text)]' : 'text-[var(--color-steve-text-faint)] hover:text-[var(--color-steve-text)]'}`}
           onClick={() => setTheme(value)}
         >
           <Icon size={13} strokeWidth={1.6} />

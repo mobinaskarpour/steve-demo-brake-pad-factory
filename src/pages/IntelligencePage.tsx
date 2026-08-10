@@ -31,6 +31,7 @@ import { appConfig } from '../config'
 import { cn } from '../lib/utils'
 import { toPersianDigits } from '../lib/format'
 import { useLocale } from '../i18n/LocaleProvider'
+import { buildStaticIdTitleMap, scrubVisibleIds } from '../domain/displayRecord'
 import { getEnConfig } from '../i18n/enContent'
 import {
   intelligenceContent,
@@ -216,7 +217,8 @@ function DecisionMapsTab() {
   const { locale, isRtl } = useLocale()
   const { recordPath } = useDemo()
   const navigate = useNavigate()
-  const pick = useCallback<Pick>((v) => (v ? (locale === 'fa' ? v.fa : v.en) : ''), [locale])
+  const idTitleMap = useMemo(() => buildStaticIdTitleMap(locale === 'en' ? 'en' : 'fa'), [locale])
+  const pick = useCallback<Pick>((v) => scrubVisibleIds(v ? (locale === 'fa' ? v.fa : v.en) : '', idTitleMap), [locale, idTitleMap])
 
   const maps = intelligenceContent.decisionMaps
   const [mapId, setMapId] = useState(maps[0]?.id || '')
@@ -404,9 +406,9 @@ function DecisionDetail({ node, pick, recordPath }: { node: DecisionNode; pick: 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             {node.confidence ? <Badge tone={confidenceTone[node.confidence]}>{t(confidenceKey[node.confidence])}</Badge> : null}
             {(node.sources || []).map((s) => (
-              <Badge key={s.en}>{pick(s)}</Badge>
+              <span key={s.en} className="text-[11px] text-[var(--color-steve-text-faint)]">{pick(s)}</span>
             ))}
-            <span className="rounded-full border border-[var(--color-steve-border-soft)] px-2.5 py-0.5 text-[11px] text-[var(--color-steve-text-faint)]">
+            <span className="steve-inline-link">
               {t('intelligence.updatedAt', { time: pick(node.updated) })}
             </span>
           </div>
@@ -421,7 +423,7 @@ function DecisionDetail({ node, pick, recordPath }: { node: DecisionNode; pick: 
             {node.recordType && node.recordId ? (
               <button
                 type="button"
-                className="rounded-full border border-[var(--color-steve-brief-border)] px-3 py-1 text-[11px] text-[var(--color-steve-green-bright)]"
+                className="steve-action is-primary"
                 onClick={() => navigate(recordPath(node.recordType as string, node.recordId as string))}
               >
                 {t('intelligence.viewEvidence')}
@@ -430,7 +432,7 @@ function DecisionDetail({ node, pick, recordPath }: { node: DecisionNode; pick: 
             {node.workId ? (
               <button
                 type="button"
-                className="rounded-full border border-[var(--color-steve-border)] px-3 py-1 text-[11px]"
+                className="steve-action"
                 onClick={() => navigate(`/work/${node.workId}`)}
               >
                 {t('intelligence.relatedWork')}
@@ -460,7 +462,8 @@ function KnowledgeTab() {
   const { t } = useTranslation()
   const { locale, isRtl } = useLocale()
   const navigate = useNavigate()
-  const pick = useCallback<Pick>((v) => (v ? (locale === 'fa' ? v.fa : v.en) : ''), [locale])
+  const idTitleMap = useMemo(() => buildStaticIdTitleMap(locale === 'en' ? 'en' : 'fa'), [locale])
+  const pick = useCallback<Pick>((v) => scrubVisibleIds(v ? (locale === 'fa' ? v.fa : v.en) : '', idTitleMap), [locale, idTitleMap])
   const d = (v: string | number) => (locale === 'fa' ? toPersianDigits(v) : String(v))
   const net = intelligenceContent.knowledge
 
@@ -531,7 +534,7 @@ function KnowledgeTab() {
         <ToolbarIcon icon={Network} />
         <span className="whitespace-nowrap px-1 text-[13px]">{t('intelligence.knowledgeNetwork')}</span>
         <ToolbarDivider />
-        <label className="flex min-w-[200px] flex-1 items-center gap-2 rounded-full border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] px-3 py-1.5">
+        <label className="flex min-w-[200px] flex-1 items-center gap-2 rounded-[8px] border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] px-3 py-1.5">
           <Search size={13} strokeWidth={1.5} className="text-[var(--color-steve-text-faint)]" />
           <input
             value={query}
@@ -609,7 +612,7 @@ function KnowledgeTab() {
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 <Badge tone={confidenceTone[selected.confidence]}>{t(confidenceKey[selected.confidence])}</Badge>
                 {selected.sources.map((s) => (
-                  <Badge key={s.en}>{pick(s)}</Badge>
+                  <span key={s.en} className="text-[11px] text-[var(--color-steve-text-faint)]">{pick(s)}</span>
                 ))}
               </div>
             </div>
@@ -643,7 +646,7 @@ function MasteryTab() {
   const { locale, loc } = useLocale()
   const { state } = useDemo()
   const navigate = useNavigate()
-  const pick: Pick = (v) => (v ? (locale === 'fa' ? v.fa : v.en) : '')
+  const pick: Pick = (v) => scrubVisibleIds(v ? (locale === 'fa' ? v.fa : v.en) : '', buildStaticIdTitleMap(locale === 'en' ? 'en' : 'fa'))
   const d = (v: string | number) => (locale === 'fa' ? toPersianDigits(v) : String(v))
   const enCfg = getEnConfig() as Record<string, string>
   const shortName = locale === 'en' ? enCfg.shortName || appConfig.shortName : appConfig.shortName
@@ -763,7 +766,7 @@ function MasteryTab() {
               <div className="mt-1 text-[11px] text-[var(--color-steve-text-faint)]">
                 {t('intelligence.alignment', { rate: d(a.alignment), domain: loc(a.domain, 'agents', a.id, 'domain') })}
               </div>
-              <div className="mt-3 h-1 overflow-hidden rounded-full bg-[var(--color-steve-elevated)]">
+              <div className="mt-3 h-1 overflow-hidden rounded-md bg-[var(--color-steve-elevated)]">
                 <div className="h-full bg-[var(--color-steve-green)]" style={{ width: `${a.mastery}%` }} />
               </div>
             </button>
@@ -857,7 +860,7 @@ function ToolbarSelect({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'appearance-none rounded-full border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] py-1.5 pe-7 ps-3 text-[12px] text-[var(--color-steve-text)] outline-none',
+          'appearance-none rounded-md border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] py-1.5 pe-7 ps-3 text-[12px] text-[var(--color-steve-text)] outline-none',
           strong && 'text-[13px]',
         )}
       >
@@ -882,14 +885,14 @@ function ToolbarToggle({
   options: { id: string; label: string }[]
 }) {
   return (
-    <span className="inline-flex rounded-full border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] p-0.5">
+    <span className="inline-flex rounded-md border border-[var(--color-steve-border)] bg-[var(--color-steve-elevated)] p-0.5">
       {options.map((o) => (
         <button
           key={o.id}
           type="button"
           onClick={() => onChange(o.id)}
           className={cn(
-            'rounded-full px-3 py-1 text-[12px] transition',
+            'rounded-md px-3 py-1 text-[12px] transition',
             value === o.id ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-green-bright)]' : 'text-[var(--color-steve-text-faint)]',
           )}
         >
@@ -916,7 +919,7 @@ function ToolbarButton({
       type="button"
       onClick={onClick}
       className={cn(
-        'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-[12px] transition',
+        'inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-[12px] transition',
         active ? 'bg-[var(--color-steve-green-dim)] text-[var(--color-steve-green-bright)]' : 'text-[var(--color-steve-text-muted)] hover:text-[var(--color-steve-text)]',
       )}
     >
@@ -959,7 +962,7 @@ function Timeline({ entries, pick }: { entries: TimelineEntry[]; pick: Pick }) {
     <ol className="space-y-3">
       {entries.map((e) => (
         <li key={e.text.en} className="flex gap-3 text-[13px] leading-7">
-          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-steve-green)]" />
+          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-[8px] bg-[var(--color-steve-green)]" />
           <span className="min-w-[110px] shrink-0 text-[12px] text-[var(--color-steve-text-faint)]">{pick(e.at)}</span>
           <span className="text-[var(--color-steve-text-muted)]">{pick(e.text)}</span>
         </li>

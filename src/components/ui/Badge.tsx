@@ -3,13 +3,25 @@ import type { StatusTone } from '../../domain/types'
 import type { ReactNode } from 'react'
 
 const tones: Record<StatusTone, string> = {
-  success: 'border-[var(--color-green-border)] text-[var(--color-green-bright)] bg-[var(--color-green-dim)]',
-  warning: 'border-[var(--notice-warning-border)] text-[var(--color-gold-soft)] bg-[var(--notice-warning-bg)]',
-  danger: 'border-[var(--notice-danger-border)] text-[var(--color-danger)] bg-[var(--notice-danger-bg)]',
-  info: 'border-[var(--notice-info-border)] text-[var(--color-info)] bg-[var(--notice-info-bg)]',
-  neutral: 'border-[var(--color-line)] text-[var(--color-ink-soft)] bg-[var(--color-elevated)]',
+  success: 'text-[var(--color-green-bright)]',
+  warning: 'text-[var(--color-gold-soft)]',
+  danger: 'text-[var(--color-danger)]',
+  info: 'text-[var(--color-info)]',
+  neutral: 'text-[var(--color-ink-soft)]',
 }
 
+const dots: Record<StatusTone, string> = {
+  success: 'bg-[var(--color-green-bright)]',
+  warning: 'bg-[var(--color-gold-soft)]',
+  danger: 'bg-[var(--color-danger)]',
+  info: 'bg-[var(--color-info)]',
+  neutral: 'bg-[var(--color-ink-faint)]',
+}
+
+/**
+ * Status mark — colored dot + plain text.
+ * Never a capsule/badge/pill.
+ */
 export function Badge({
   children,
   tone = 'neutral',
@@ -20,8 +32,9 @@ export function Badge({
   className?: string
 }) {
   return (
-    <span className={cn('inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px]', tones[tone], className)}>
-      {children}
+    <span className={cn('steve-status inline-flex items-center gap-1.5 text-[12px]', tones[tone], className)}>
+      <span className={cn('steve-status-dot', dots[tone])} aria-hidden />
+      <span>{children}</span>
     </span>
   )
 }
