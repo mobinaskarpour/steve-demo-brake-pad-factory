@@ -136,7 +136,7 @@
     "horizon": "افق: آذر ۱۴۰۵",
     "stats": "{{goals}} هدف سازمانی • {{initiatives}} ابتکار فعال • {{protected}} تعهد محافظت‌شده",
     "viewOnMap": "مشاهده جهت روی نقشه",
-    "activeGoals": "اهداف و تعهدات فعال",
+    "activeGoals": "اهداف فعال",
     "goalMeta": "{{owner}} • هدف: {{target}}",
     "goalRisk": " • ریسک: {{risk}}",
     "next30": "۳۰ روز آینده",
@@ -162,7 +162,15 @@
     "legendPrograms": "برنامه‌ها",
     "legendMilestones": "نقاط عطف",
     "legendReviews": "بازبینی‌ها",
-    "legendCommitments": "تعهدات"
+    "legendCommitments": "تعهدات",
+    "protectedObligations": "تعهدات محافظت‌شده",
+    "approveDirection": "تایید جهت",
+    "updateDirection": "به‌روزرسانی جهت",
+    "directionPending": "در انتظار تایید",
+    "directionDraft": "پیش‌نویس",
+    "obligationDue": "موعد: {{due}}",
+    "toastDirectionUpdated": "جهت به‌روز شد و برای تایید آماده است.",
+    "toastDirectionApproved": "جهت کسب‌وکار تایید شد."
   },
   "intelligence": {
     "title": "هوشمندی",

@@ -25,8 +25,13 @@ const PLAN_CALENDAR = [
   { day: 31, kind: 'review' as const, labelFa: 'بازبینی هم‌راستایی کارخانه', labelEn: 'Plant alignment review' },
 ]
 
+const PROTECTED_OBLIGATIONS = [
+  { id: 'obl-1', titleFa: 'عدم آزادسازی بچ بدون تایید کنترل کیفیت', titleEn: 'No batch release without QC clearance', ownerFa: 'عامل تولید', ownerEn: 'Production agent', statusFa: 'محافظت‌شده', statusEn: 'Protected', dueFa: 'هر بچ', dueEn: 'Each batch' },
+  { id: 'obl-2', titleFa: 'تسویه توافق‌شده با تامین‌کنندگان کلیدی', titleEn: 'Agreed settlement terms with key suppliers', ownerFa: 'عامل مالی', ownerEn: 'Finance agent', statusFa: 'محافظت‌شده', statusEn: 'Protected', dueFa: 'طبق قرارداد', dueEn: 'Per contract' },
+]
+
 export function PlanPage() {
-  const { state } = useDemo()
+  const { state, dispatch } = useDemo()
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { locale, isRtl, loc, tStatus } = useLocale()
@@ -39,6 +44,7 @@ export function PlanPage() {
   const [agenda, setAgenda] = useState('agenda')
   const [directionOpen, setDirectionOpen] = useState(false)
   const [goalDetail, setGoalDetail] = useState<string | null>(null)
+  const [directionStatus, setDirectionStatus] = useState<'approved' | 'pending' | 'draft'>('approved')
   const Chevron = isRtl ? ChevronLeft : ChevronRight
   const d = (v: string | number) => (locale === 'fa' ? toPersianDigits(v) : String(v))
   const scrubLabel = (text: string) => scrubVisibleIds(text, buildStaticIdTitleMap(locale === 'en' ? 'en' : 'fa'))
@@ -89,18 +95,43 @@ export function PlanPage() {
               {t('plan.direction', { season })}
             </div>
             <p className="max-w-4xl text-[18px] font-light">{directionNarrative}</p>
-            <div className="flex flex-wrap">
-              <Badge tone="success">{t('status.approved')}</Badge>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone={directionStatus === 'approved' ? 'success' : directionStatus === 'pending' ? 'warning' : 'neutral'}>
+                {directionStatus === 'approved' ? t('status.approved') : directionStatus === 'pending' ? t('plan.directionPending') : t('plan.directionDraft')}
+              </Badge>
               <span className="text-[11px] text-[var(--color-steve-text-faint)]">{t('plan.directionVer')}</span>
               <span className="text-[11px] text-[var(--color-steve-text-faint)]">·</span>
               <span className="text-[11px] text-[var(--color-steve-text-faint)]">{t('plan.horizon')}</span>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="steve-action"
+                onClick={() => {
+                  setDirectionStatus('pending')
+                  dispatch({ type: 'SHOW_TOAST', text: t('plan.toastDirectionUpdated') })
+                }}
+              >
+                {t('plan.updateDirection')}
+              </button>
+              <button
+                type="button"
+                className="steve-action is-primary"
+                disabled={directionStatus === 'approved'}
+                onClick={() => {
+                  setDirectionStatus('approved')
+                  dispatch({ type: 'SHOW_TOAST', text: t('plan.toastDirectionApproved') })
+                }}
+              >
+                {t('plan.approveDirection')}
+              </button>
             </div>
             <div className="flex flex-wrap items-center justify-between text-[12px]">
               <span className="text-[var(--color-ink-faint)]">
                 {t('plan.stats', {
                   goals: d(state.goals.length),
                   initiatives: d(state.initiatives.length),
-                  protected: d(2),
+                  protected: d(PROTECTED_OBLIGATIONS.length),
                 })}
               </span>
               <div className="flex flex-wrap">
@@ -138,6 +169,24 @@ export function PlanPage() {
                   <Badge tone={g.progress < 50 ? 'danger' : 'success'}>{tStatus(g.status) === g.status ? loc(g.status, 'goals', g.id, 'status') : tStatus(g.status)}</Badge>
                 </button>
               ))}
+
+              <div className="mt-5 text-[13.5px] text-[var(--color-steve-text)]">{t('plan.protectedObligations')}</div>
+              <div className="mt-1 space-y-1">
+                {PROTECTED_OBLIGATIONS.map((o) => (
+                  <div key={o.id} className="flex w-full items-start gap-3 border-b border-[var(--color-line-soft)] py-3 text-start last:border-b-0">
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[var(--color-steve-gold,#b89556)]/15 text-[10px] text-[var(--color-steve-gold,#b89556)]">
+                      {locale === 'fa' ? 'تعهد' : 'OBL'}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13px]">{locale === 'fa' ? o.titleFa : o.titleEn}</div>
+                      <div className="text-[11px] text-[var(--color-ink-faint)]">
+                        {(locale === 'fa' ? o.ownerFa : o.ownerEn)} · {t('plan.obligationDue', { due: locale === 'fa' ? o.dueFa : o.dueEn })}
+                      </div>
+                    </div>
+                    <Badge tone="warning">{locale === 'fa' ? o.statusFa : o.statusEn}</Badge>
+                  </div>
+                ))}
+              </div>
             </section>
 
             <section className="steve-card p-5">
@@ -290,14 +339,14 @@ export function PlanPage() {
             <p className="text-[14px] text-[var(--color-steve-text-muted)]">{directionNarrative}</p>
             <div className="text-[12px] text-[var(--color-steve-text-muted)]">
               <div>
-                <span className="text-[var(--color-steve-gold)]">{t('plan.directionVer')}</span> · {t('status.approved')}
+                <span className="text-[var(--color-steve-gold)]">{t('plan.directionVer')}</span> · {directionStatus === 'approved' ? t('status.approved') : directionStatus === 'pending' ? t('plan.directionPending') : t('plan.directionDraft')}
               </div>
               <div>{t('plan.directionEvolves')}</div>
               <div>
                 {t('plan.stats', {
                   goals: d(state.goals.length),
                   initiatives: d(state.initiatives.length),
-                  protected: d(2),
+                  protected: d(PROTECTED_OBLIGATIONS.length),
                 })}
               </div>
             </div>

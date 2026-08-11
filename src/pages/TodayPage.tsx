@@ -103,6 +103,17 @@ function BriefProse({
   return <>{parts}</>
 }
 
+function resolveMgmtHref(line: { label: string; text: string }, links: { match: string; to: string }[]): string | null {
+  for (const link of links) {
+    if (link.match && line.text.includes(link.match)) return link.to
+  }
+  const label = line.label
+  if (/پیش.?رو|Coming up/i.test(label)) return '/plan'
+  if (links[0]?.to) return links[0].to
+  if (/تمرکز|Focus|هنوز باز|Still open|آخرین|Since/i.test(label)) return '/work'
+  return null
+}
+
 export function TodayPage() {
   const { state, dispatch, openAlerts, recordPath } = useDemo()
   const navigate = useNavigate()
@@ -266,15 +277,26 @@ export function TodayPage() {
                   </p>
                 ))}
               </div>
-              <div className="mt-5 space-y-1.5 text-[13px] leading-7">
-                {brief.lines.map((line) => (
-                  <div key={line.label}>
-                    <span className="text-[var(--color-steve-green-lead)]">{line.label} — </span>
-                    <span className="text-[var(--color-steve-text-muted)]">
-                      <BriefProse text={line.text} links={briefLinks} />
-                    </span>
-                  </div>
-                ))}
+              <div className="mt-5 space-y-1.5 text-[13px] leading-7" aria-label="Management overview">
+                {brief.lines.map((line) => {
+                  const href = resolveMgmtHref(line, briefLinks)
+                  return (
+                    <button
+                      key={line.label}
+                      type="button"
+                      disabled={!href}
+                      className={cn(
+                        'flex w-full flex-wrap items-baseline gap-x-1 text-start',
+                        href && 'rounded-md px-1 -mx-1 py-0.5 hover:bg-[var(--steve-hover-soft)]',
+                        !href && 'cursor-default',
+                      )}
+                      onClick={() => href && navigate(href)}
+                    >
+                      <span className="text-[var(--color-steve-green-lead)]">{line.label} — </span>
+                      <span className="text-[var(--color-steve-text-muted)]">{line.text}</span>
+                    </button>
+                  )
+                })}
               </div>
             </section>
           ) : (

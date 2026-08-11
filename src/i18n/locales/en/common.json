@@ -136,7 +136,7 @@
     "horizon": "Horizon: Azar 1405",
     "stats": "{{goals}} org goals · {{initiatives}} active initiatives · {{protected}} protected commitments",
     "viewOnMap": "View direction on map",
-    "activeGoals": "Active goals & commitments",
+    "activeGoals": "Active goals",
     "goalMeta": "{{owner}} · Target: {{target}}",
     "goalRisk": " · Risk: {{risk}}",
     "next30": "Next 30 days",
@@ -162,7 +162,15 @@
     "legendPrograms": "Programs",
     "legendMilestones": "Milestones",
     "legendReviews": "Reviews",
-    "legendCommitments": "Commitments"
+    "legendCommitments": "Commitments",
+    "protectedObligations": "Protected obligations",
+    "approveDirection": "Approve direction",
+    "updateDirection": "Update direction",
+    "directionPending": "Pending approval",
+    "directionDraft": "Draft",
+    "obligationDue": "Due: {{due}}",
+    "toastDirectionUpdated": "Direction updated and ready for approval.",
+    "toastDirectionApproved": "Business direction approved."
   },
   "intelligence": {
     "title": "Intelligence",

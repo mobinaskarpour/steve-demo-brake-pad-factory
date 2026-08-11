@@ -146,6 +146,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
         'هشدار تایید مشاهده شد.': 'Alert acknowledged.',
         'هشدار بسته شد.': 'Alert closed.',
         'پیام ارسال شد.': 'Message sent.',
+        'جهت به‌روز شد و برای تایید آماده است.': 'Direction updated and ready for approval.',
+        'جهت کسب‌وکار تایید شد.': 'Business direction approved.',
       }
       if (exact[fa]) return scrub(exact[fa])
       let out = fa

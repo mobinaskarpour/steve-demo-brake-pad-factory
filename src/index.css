@@ -720,3 +720,15 @@ html[dir="rtl"] .steve-greeting {
 }
 .steve-underline-tabs { gap: 1.25rem; }
 .ask-steve-dock-icon { border-radius: 6px; }
+
+.steve-brief-mgmt-item.is-nav {
+  width: 100%;
+  text-align: start;
+  border-radius: 8px;
+  padding: 2px 4px;
+  margin-inline: -4px;
+  transition: background-color 120ms ease;
+}
+.steve-brief-mgmt-item.is-nav:hover {
+  background: var(--steve-hover-soft, color-mix(in srgb, var(--color-steve-green-bright) 8%, transparent));
+}

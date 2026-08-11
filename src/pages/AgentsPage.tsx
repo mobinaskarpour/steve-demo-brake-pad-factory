@@ -23,7 +23,7 @@ import { useLocale } from '../i18n/LocaleProvider'
 import { ensureEnglish } from '../i18n/ensureEnglish'
 import { enContent } from '../i18n/enContent'
 import { useAskSteve } from '../components/layout/AskSteveContext'
-import { buildIdTitleMap } from '../domain/displayRecord'
+import { buildIdTitleMap, scrubWithState } from '../domain/displayRecord'
 import {
   dashboardKindOf,
   productionStageLabel,
@@ -349,7 +349,7 @@ export function AgentsPage() {
               <div key={k.id} className="steve-surface">
                 <div className="text-[11px] text-[var(--color-steve-text-faint)]">{en ? ensureEnglish(enKpis?.[i]?.label || k.label) : k.label}</div>
                 <div className="text-[24px] font-light">{en ? ensureEnglish(enKpis?.[i]?.value || k.value) : k.value}</div>
-                <div className={cn('text-[12px]', k.delta >= 0 ? 'text-[var(--color-steve-green-bright)]' : 'text-[var(--color-steve-text-muted)]')}>{en ? ensureEnglish(enKpis?.[i]?.hint || k.hint) : k.hint}</div>
+                <div className={cn('text-[12px]', k.delta >= 0 ? 'text-[var(--color-steve-green-bright)]' : 'text-[var(--color-steve-text-muted)]')}>{scrubWithState(en ? ensureEnglish(enKpis?.[i]?.hint || k.hint) : k.hint, state, en ? 'en' : 'fa', loc)}</div>
               </div>
             ))}
           </div>
@@ -472,7 +472,7 @@ export function AgentsPage() {
             <div className="steve-surface p-5">
               {agent.activity.map((a) => (
                 <div key={a.id} className="text-[13px] text-[var(--color-steve-text-muted)]">
-                  {a.time} — {en ? ensureEnglish(a.text) : a.text}
+                  {a.time} — {scrubWithState(en ? ensureEnglish(a.text) : a.text, state, en ? 'en' : 'fa', loc)}
                 </div>
               ))}
             </div>
