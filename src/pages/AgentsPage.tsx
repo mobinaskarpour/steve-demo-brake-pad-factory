@@ -85,7 +85,7 @@ export function AgentsPage() {
       })
       return
     }
-    pushRecent(agent.id)
+    pushRecent(agent.id, state.agents)
     const kind = dashboardKindOf(agent)
     const prodOrderTitle = titleOf('Pending production order for Parts-Gostar Pars order')
     const batchTitle = titleOf('Quarantined batch (friction-test failure)')
@@ -116,7 +116,7 @@ export function AgentsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agent, en, loc, setContext])
 
-  const recent = readRecent().filter((id) => state.agents.some((a) => a.id === id))
+  const recent = readRecent(state.agents).filter((id) => state.agents.some((a) => a.id === id))
 
   const enKpis = useMemo(() => {
     if (!en || !agent) return null
@@ -169,7 +169,7 @@ export function AgentsPage() {
             { id: 'all', label: en ? 'All' : 'همه' },
           ]}
         />
-        <div className="grid md: xl:">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {lists[hubTab].map((a) => {
             const kind = dashboardKindOf(a)
             return (
@@ -344,7 +344,7 @@ export function AgentsPage() {
             <p className="max-w-[980px] text-[14px] leading-[1.85]">{loc(agent.summary, 'agents', agent.id, 'summary')}</p>
           </section>
 
-          <div className="grid sm: xl:">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {agent.kpis.map((k, i) => (
               <div key={k.id} className="steve-surface">
                 <div className="text-[11px] text-[var(--color-steve-text-faint)]">{en ? ensureEnglish(enKpis?.[i]?.label || k.label) : k.label}</div>
@@ -496,7 +496,7 @@ function ProductionSurface({ en, d, state, idMap, dispatch, navigate, stageFilte
 
   return (
     <div className="space-y-4">
-      <div className="grid sm: xl:">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { label: en ? 'Open production orders' : 'دستور تولید باز', value: stats.open, icon: Layers },
           { label: en ? 'In QC' : 'در کنترل کیفیت', value: stats.inQc, icon: AlertTriangle },
@@ -719,7 +719,7 @@ function SupplySurface({ en, d, state, idMap, dispatch, navigate, recordPath, de
   const titleOf = (recId: string) => idMap.get(recId) || (en ? 'Business record' : 'رکورد کسب‌وکار')
   return (
     <div className="space-y-4">
-      <div className="grid sm: xl:">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { label: en ? 'Materials short' : 'کسری موجودی', value: stats.shortages, icon: AlertTriangle },
           { label: en ? 'Critical items' : 'قلم بحرانی', value: stats.critical, icon: Boxes },
@@ -874,7 +874,7 @@ function SettlementSurface({ en, state, dispatch, navigate, detail, setDetail }:
   const stats = settlementStats(state)
   return (
     <div className="space-y-4">
-      <div className="grid sm: xl:">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { label: en ? 'Open assignments' : 'تخصیص باز', value: stats.open },
           { label: en ? 'Awaiting confirmation' : 'منتظر تایید', value: stats.awaiting },

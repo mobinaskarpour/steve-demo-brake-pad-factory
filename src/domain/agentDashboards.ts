@@ -56,36 +56,52 @@ export function surfaceFor(kind: DashboardKind): DashboardSurface {
 const PIN_KEY = 'steve.agentDashboards.pins'
 const RECENT_KEY = 'steve.agentDashboards.recent'
 
+/** Demo seed when local history is empty — never leave Pinned/Recent blank for presentation. */
+const DEFAULT_RECENT_IDS = ['agent-fuel', 'agent-proc', 'agent-fin', 'agent-wh']
+
+function pinDefaults(agents: AgentProfile[]): string[] {
+  const pinned = agents.filter((a) => a.pinDefault).map((a) => a.id)
+  return pinned.length ? pinned : agents.slice(0, 2).map((a) => a.id)
+}
+
 export function readPinned(agents: AgentProfile[]): string[] {
+  const fallback = pinDefaults(agents)
   try {
     const raw = localStorage.getItem(PIN_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as string[]
-      if (Array.isArray(parsed) && parsed.length) return parsed.filter((id) => agents.some((a) => a.id === id))
+      if (Array.isArray(parsed) && parsed.length) {
+        const valid = parsed.filter((id) => agents.some((a) => a.id === id))
+        return valid.length ? valid : fallback
+      }
     }
   } catch {
     /* ignore */
   }
-  return agents.filter((a) => a.pinDefault).map((a) => a.id)
+  return fallback
 }
 
 export function writePinned(ids: string[]) {
   localStorage.setItem(PIN_KEY, JSON.stringify(ids))
 }
 
-export function readRecent(): string[] {
+export function readRecent(agents?: AgentProfile[]): string[] {
+  const known = new Set((agents || []).map((a) => a.id))
+  const seed = (agents ? DEFAULT_RECENT_IDS.filter((id) => known.has(id)) : DEFAULT_RECENT_IDS).slice(0, 4)
   try {
     const raw = localStorage.getItem(RECENT_KEY)
-    if (!raw) return []
+    if (!raw) return seed
     const parsed = JSON.parse(raw) as string[]
-    return Array.isArray(parsed) ? parsed : []
+    if (!Array.isArray(parsed) || !parsed.length) return seed
+    const valid = agents ? parsed.filter((id) => known.has(id)) : parsed
+    return valid.length ? valid : seed
   } catch {
-    return []
+    return seed
   }
 }
 
-export function pushRecent(id: string) {
-  const next = [id, ...readRecent().filter((x) => x !== id)].slice(0, 8)
+export function pushRecent(id: string, agents?: AgentProfile[]) {
+  const next = [id, ...readRecent(agents).filter((x) => x !== id)].slice(0, 8)
   localStorage.setItem(RECENT_KEY, JSON.stringify(next))
 }
 

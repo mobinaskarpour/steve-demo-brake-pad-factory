@@ -244,7 +244,7 @@ export function PlanPage() {
 
           <section className="steve-surface p-5">
             <div className="text-[14px]">{t('plan.activeInitiatives')}</div>
-            <div className="grid md:">
+            <div className="grid gap-3 md:grid-cols-2">
               {state.initiatives.map((i) => (
                 <Link key={i.id} to={i.workIds[0] ? `/work/${i.workIds[0]}` : '/work'} className="rounded-xl border border-[var(--color-line-soft)] p-3 hover:border-[var(--color-green-border)]">
                   <div className="text-[13px]">{loc(i.title, 'initiatives', i.id, 'title')}</div>
@@ -280,14 +280,14 @@ export function PlanPage() {
               </span>
             </div>
           </div>
-          <div className="grid border-b border-[var(--color-line-soft)] text-center text-[11px] text-[var(--color-ink-faint)]">
+          <div className="grid grid-cols-7 border-b border-[var(--color-line-soft)] text-center text-[11px] text-[var(--color-ink-faint)]">
             {[0, 1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="border-e border-[var(--color-line-soft)] last:">
                 {t(`plan.weekday${i}`)}
               </div>
             ))}
           </div>
-          <div className="grid min-h-[420px]">
+          <div className="grid min-h-[420px] grid-cols-7">
             {Array.from({ length: 35 }).map((_, i) => {
               const day = i - 2
               const inMonth = day >= 1 && day <= 31
